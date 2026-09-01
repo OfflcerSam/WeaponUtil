@@ -1,0 +1,36 @@
+{
+  "type": "weapon",
+  "id": 5000,
+  "kind": "turret",
+  "icon": 608,
+  "color": "AZURE",
+  "name": "Rift Railgun",
+  "description": "A modified railgun firing compressed rail slugs.",
+  "tier": 0,
+  "rarity": "UNCOMMON",
+  "market": true,
+
+  "turretStats": {
+    "weaponType": 5,
+    "volume": 3.0,
+    "creditValue": 0,
+    "baseDamage": 8.5,
+    "range": 350,
+    "energyRatio": 2.0,
+    "effectType": 0,
+    "accuracy": 0.78,
+    "reloadTime": 3.5,
+    "bonusCoef": -1.0
+  },
+
+  "recipe": {
+    "label": "T1:Rift Railgun",
+    "blueprintId": 20107,
+    "blueprintAmount": 1,
+    "ingredients": [
+      { "id": 10701, "amount": 6 },
+      { "id": 10711, "amount": 8 },
+      { "id": 10702, "amount": 4 }
+    ]
+  }
+}

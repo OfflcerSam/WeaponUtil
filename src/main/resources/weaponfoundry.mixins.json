@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "offlcersam.weaponfoundry.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MainSetupMixin",
+    "CraftingTableMixin",
+    "PlayerMixin",
+    "WeaponListAccessorMixin",
+    "ItemIconMixin",
+    "MissileFXMixin",
+    "RailGunFXMixin",
+    "FighterFXMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

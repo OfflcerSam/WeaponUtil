@@ -1,0 +1,23 @@
+{
+  "type": "ammo",
+  "id": 5200,
+  "kind": "missile",
+  "icon": 804,
+  "color": "WHITE",
+  "name": "Rift Missiles",
+  "description": "Guided missiles tuned for higher burst speed.",
+  "tier": 1,
+  "rarity": "UNCOMMON",
+  "market": true,
+  "volume": 0.07,
+  "creditValue": 179,
+
+  "fx": {
+    "bonusPHDamage": 8.0,
+    "bonusEMDamage": 6.0,
+    "speed": 3.6,
+    "scale": 0.65,
+    "glowColor": "LT_YELLOW",
+    "baseColor": "LT_AZURE"
+  }
+}

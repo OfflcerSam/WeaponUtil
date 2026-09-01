@@ -1,0 +1,32 @@
+{
+  "type": "ammo",
+  "id": 5100,
+  "kind": "rail",
+  "icon": 816,
+  "color": "WHITE",
+  "name": "Rift Rounds",
+  "description": "Dense slugs machined for the Rift Railgun.",
+  "tier": 0,
+  "rarity": "UNCOMMON",
+  "market": true,
+  "volume": 0.03,
+  "creditValue": 40,
+
+  "fx": {
+    "bonusPHDamage": 6.0,
+    "bonusEMDamage": 4.0,
+    "glowColor": "AZURE"
+  },
+
+  "recipe": {
+    "label": "T1:Rift Rounds",
+    "productAmount": 300,
+    "blueprintId": 20107,
+    "blueprintAmount": 30,
+    "ingredients": [
+      { "id": 10072, "amount": 30 },
+      { "id": 10202, "amount": 20 },
+      { "id": 10058, "amount": 20 }
+    ]
+  }
+}

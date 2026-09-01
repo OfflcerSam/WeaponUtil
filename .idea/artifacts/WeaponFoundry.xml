@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="WeaponFoundry">
+    <output-path>$PROJECT_DIR$/out/artifacts/WeaponFoundry</output-path>
+    <root id="archive" name="WeaponFoundry.jar">
+      <element id="module-output" name="WeaponFoundry" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/fabric.mod.json" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/weaponfoundry.mixins.json" />
+    </root>
+  </artifact>
+</component>

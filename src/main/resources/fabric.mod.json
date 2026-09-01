@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "offlcersam_weaponfoundry",
+  "version": "1.0.0",
+  "name": "WeaponForge",
+  "description": "Loads weapon and ammo definitions from JSON files under <gameDir>/weapons/<modName>/, so weapons/ammo can be made as json data instead of Java/Mixin code.",
+  "environment": "*",
+
+  "mixins": [
+    "weaponfoundry.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "java": ">=25",
+    "sector-space": ">=0.5.9.6"
+  }
+}

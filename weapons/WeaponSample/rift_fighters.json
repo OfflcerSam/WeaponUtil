@@ -1,0 +1,25 @@
+{
+  "type": "ammo",
+  "id": 5300,
+  "kind": "fighter",
+  "icon": 1001,
+  "color": "WHITE",
+  "name": "Rift Fighters",
+  "description": "Fighter drones launched from the Twin Catapult Tube.",
+  "tier": 1,
+  "rarity": "UNCOMMON",
+  "market": true,
+  "volume": 0.28,
+  "creditValue": 895,
+
+  "fx": {
+    "bonusPHDamage": 3.5,
+    "bonusEMDamage": 3.5,
+    "speed": 3.0,
+    "scale": 1.0,
+    "glowColor": "DK_ORANGE",
+    "baseColor": "LT_GREY",
+    "weaponColor": "LT_YELLOW",
+    "fighterGFXIndex": 4
+  }
+}
