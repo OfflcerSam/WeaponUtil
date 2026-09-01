@@ -1,0 +1,24 @@
+{
+  "type": "weapon",
+  "id": 5005,
+  "kind": "tether",
+  "icon": 507,
+  "color": "WHITE",
+  "name": "Gravity Tether",
+  "description": "Locks onto a target and drags on its systems.",
+  "tier": 1,
+  "rarity": "UNCOMMON",
+  "market": true,
+
+  "tetherStats": {
+    "unitVolume": 10.0,
+    "creditValue": 62500,
+    "range": 650.0,
+    "speedReduction": 0.55,
+    "targetShieldDrain": 0.0,
+    "targetEnergyDrain": 0.0,
+    "targetShieldResist": 0.0,
+    "targetArmorResist": 0.0,
+    "energyUsage": 15.0
+  }
+}

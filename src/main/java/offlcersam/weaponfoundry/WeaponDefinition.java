@@ -3,6 +3,7 @@ package offlcersam.weaponfoundry;
 import offlcersam.weaponfoundry.json.JsonValue;
 
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * Required WeaponDefinition for a weapon.
@@ -10,7 +11,7 @@ import java.nio.file.Path;
 public record WeaponDefinition(int id, Kind kind, int icon, String color, String name, String description,
                                int tier, String rarity, boolean market, TurretStats turretStats,
                                SalvagerStats salvagerStats, PduStats pduStats, TetherStats tetherStats,
-                               Recipe recipe) {
+                               Recipe recipe, List<LootEntry> lootTable) {
 
     /**
      * Which WeaponList.write*() family this weapon uses.
@@ -52,7 +53,8 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
     }
 
     /**
-     * Optional crafting recipe for this weapon.
+     * Optional crafting recipe for this weapon.nt, int, int, int),
+     * which always takes exactly a blueprint slot plus 3 fixed ingredient slots.
      */
     public record Recipe(String label, int blueprintId, int blueprintAmount, Ingredient ingredientA,
                          Ingredient ingredientB, Ingredient ingredientC) {
@@ -66,7 +68,6 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
 
     /**
      * Parses and validates one weapon JSON object.
-     * Throws JsonValue.JsonException with a specific field name on any missing/malformed required field.
      */
     public static WeaponDefinition fromJson(JsonValue root, Path baseDir) {
         int id = root.get("id").asInt();
@@ -92,6 +93,7 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
         }
 
         Recipe recipe = parseRecipe(root);
+        List<LootEntry> lootTable = LootEntry.parseList(root);
 
         return new WeaponDefinition(
                 id,
@@ -107,7 +109,8 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
                 salvagerStats,
                 pduStats,
                 tetherStats,
-                recipe
+                recipe,
+                lootTable
         );
     }
 

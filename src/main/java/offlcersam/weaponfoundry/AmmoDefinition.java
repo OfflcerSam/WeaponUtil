@@ -3,12 +3,14 @@ package offlcersam.weaponfoundry;
 import offlcersam.weaponfoundry.json.JsonValue;
 
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * Required AmmoDefinition for a consumable ammo item (Missiles, Rounds, or Fighters).
  */
 public record AmmoDefinition(int id, Kind kind, int icon, String color, String name, String description, int tier,
-                             String rarity, boolean market, double volume, long creditValue, Fx fx, Recipe recipe) {
+                             String rarity, boolean market, double volume, long creditValue, Fx fx, Recipe recipe,
+                             List<LootEntry> lootTable) {
 
     /** Which FX class's configureEFXandBonus(int) this ammo's bonuses are read by. */
     public enum Kind { MISSILE, RAIL, FIGHTER }
@@ -53,9 +55,11 @@ public record AmmoDefinition(int id, Kind kind, int icon, String color, String n
 
         Fx fx = parseFx(root.get("fx"), kind);
         Recipe recipe = parseRecipe(root);
+        List<LootEntry> lootTable = LootEntry.parseList(root);
 
         return new AmmoDefinition(
-                id, kind, icon, color, name, description, tier, rarity, market, volume, creditValue, fx, recipe
+                id, kind, icon, color, name, description, tier, rarity, market, volume, creditValue, fx, recipe,
+                lootTable
         );
     }
 

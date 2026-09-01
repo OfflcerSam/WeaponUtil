@@ -28,5 +28,10 @@
       { "id": 10202, "amount": 20 },
       { "id": 10058, "amount": 20 }
     ]
-  }
+  },
+
+  "lootTable": [
+    { "tier": 0, "weight": 2 },
+    { "tier": 1, "weight": 1 }
+  ]
 }

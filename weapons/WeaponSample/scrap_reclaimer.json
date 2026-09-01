@@ -1,0 +1,22 @@
+{
+  "type": "weapon",
+  "id": 5003,
+  "kind": "salvager",
+  "icon": 1012,
+  "color": "YELLOW",
+  "name": "Scrap Reclaimer",
+  "description": "Automatically pulls salvageable materials from nearby wreckage.",
+  "tier": 1,
+  "rarity": "UNCOMMON",
+  "market": true,
+
+  "salvagerStats": {
+    "unitVolume": 10.0,
+    "creditValue": 62500,
+    "range": 320.0,
+    "maxSalvageTier": 1,
+    "salvagerItemBins": 1,
+    "salvageChance": 0.22,
+    "energyUsage": 10.0
+  }
+}

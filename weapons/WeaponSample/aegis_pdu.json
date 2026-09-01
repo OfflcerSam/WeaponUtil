@@ -1,0 +1,21 @@
+{
+  "type": "weapon",
+  "id": 5004,
+  "kind": "pdu",
+  "icon": 1012,
+  "color": "AZURE",
+  "name": "Aegis Point Defense",
+  "description": "Automatically shoots down incoming missiles and fighters.",
+  "tier": 1,
+  "rarity": "UNCOMMON",
+  "market": true,
+
+  "pduStats": {
+    "unitVolume": 10.0,
+    "creditValue": 62500,
+    "targetRange": 300.0,
+    "targetPower": 12.0,
+    "targetAccuracy": 0.85,
+    "energyUsage": 10.0
+  }
+}
