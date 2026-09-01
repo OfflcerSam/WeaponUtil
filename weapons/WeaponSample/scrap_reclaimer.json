@@ -18,5 +18,10 @@
     "salvagerItemBins": 1,
     "salvageChance": 0.22,
     "energyUsage": 10.0
-  }
+  },
+
+  "lootTable": [
+    { "tier": 1, "weight": 2 },
+    { "tier": 2, "weight": 1 }
+  ]
 }

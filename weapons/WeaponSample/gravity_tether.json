@@ -20,5 +20,10 @@
     "targetShieldResist": 0.0,
     "targetArmorResist": 0.0,
     "energyUsage": 15.0
-  }
+  },
+
+  "lootTable": [
+    { "tier": 1, "weight": 1 },
+    { "tier": 2, "weight": 1 }
+  ]
 }
