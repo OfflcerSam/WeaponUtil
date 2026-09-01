@@ -127,7 +127,7 @@ as any other invalid field.
 | `turret`   | `WeaponList.write()`         | Normal weapon slot item (lasers, railguns, plasma, disruptors, missile launchers, etc).   |
 | `bay`      | `WeaponList.writeBay()`      | Fighter bay / catapult tube. Same stats section as `turret`, just a different write call. |
 | `salvager` | `WeaponList.writeSalvager()` | Automatic salvaging device.                                                               |
-| `pdu`      | `WeaponList.writePDU()`      | Point Defense Unit, shoots down missiles/fighters automatically.                          |
+| `pdu`      | `WeaponList.writePDU()`      | Point Defense Unit, while you can do it, it might not fully work.                         |
 | `tether`   | `WeaponList.writeTether()`   | Grappler/tether device.                                                                   |
 
 ### `turretStats` (required for `turret` and `bay`)
