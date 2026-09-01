@@ -1,0 +1,29 @@
+{
+  "type": "weapon",
+  "id": 5006,
+  "kind": "turret",
+  "icon": 608,
+  "color": "AZURE",
+  "name": "Rift Railgun+",
+  "description": "An upgraded Rift Railgun, its rail coils re-machined for tighter tolerances.",
+  "tier": 0,
+  "rarity": "RARE",
+  "market": false,
+
+  "turretStats": {
+    "weaponType": 5,
+    "volume": 3.0,
+    "creditValue": 0,
+    "baseDamage": 10.5,
+    "range": 370,
+    "energyRatio": 1.9,
+    "effectType": 0,
+    "accuracy": 0.81,
+    "reloadTime": 3.4,
+    "bonusCoef": -1.0
+  },
+
+  "lootTable": [
+    { "tier": 1, "weight": 1, "rare": true }
+  ]
+}

@@ -53,10 +53,9 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
     }
 
     /**
-     * Optional crafting recipe for this weapon.nt, int, int, int),
-     * which always takes exactly a blueprint slot plus 3 fixed ingredient slots.
+     * Optional crafting recipe for this weapon.
      */
-    public record Recipe(String label, int blueprintId, int blueprintAmount, Ingredient ingredientA,
+    public record Recipe(String label, int blueprintId, int blueprintAmount, Integer plusId, Ingredient ingredientA,
                          Ingredient ingredientB, Ingredient ingredientC) {
     }
 
@@ -203,6 +202,9 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
         int blueprintId = recipeValue.get("blueprintId").asInt();
         int blueprintAmount = recipeValue.getInt("blueprintAmount", 1);
 
+        JsonValue plusIdValue = recipeValue.getOrNull("plusId");
+        Integer plusId = plusIdValue == null || plusIdValue.isNull() ? null : plusIdValue.asInt();
+
         java.util.List<JsonValue> ingredients = recipeValue.getArray("ingredients");
 
         // CraftingTable#addRecipe always takes exactly 3 ingredient slots - no vanilla overload takes fewer or more.
@@ -216,6 +218,6 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
         Ingredient b = new Ingredient(ingredients.get(1).get("id").asInt(), ingredients.get(1).get("amount").asInt());
         Ingredient c = new Ingredient(ingredients.get(2).get("id").asInt(), ingredients.get(2).get("amount").asInt());
 
-        return new Recipe(label, blueprintId, blueprintAmount, a, b, c);
+        return new Recipe(label, blueprintId, blueprintAmount, plusId, a, b, c);
     }
 }

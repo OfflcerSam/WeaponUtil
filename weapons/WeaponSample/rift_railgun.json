@@ -27,6 +27,7 @@
     "label": "T1:Rift Railgun",
     "blueprintId": 20107,
     "blueprintAmount": 1,
+    "plusId": 5006,
     "ingredients": [
       { "id": 10701, "amount": 6 },
       { "id": 10711, "amount": 8 },

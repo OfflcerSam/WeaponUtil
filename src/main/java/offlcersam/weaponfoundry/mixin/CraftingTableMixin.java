@@ -35,14 +35,34 @@ public abstract class CraftingTableMixin extends CraftingTable {
             WeaponDefinition.Ingredient b = recipe.ingredientB();
             WeaponDefinition.Ingredient c = recipe.ingredientC();
 
-            this.addRecipe(
-                    recipe.label(),
-                    productId,
-                    recipe.blueprintId(), recipe.blueprintAmount(),
-                    a.id(), a.amount(),
-                    b.id(), b.amount(),
-                    c.id(), c.amount()
-            );
+            if (recipe.plusId() != null) {
+                if (recipe.blueprintAmount() != 1) {
+                    ModLogger.log(
+                            "[WeaponFoundry] Weapon " + def.name() + " (id: " + def.id()
+                                    + ") sets recipe.blueprintAmount to " + recipe.blueprintAmount()
+                                    + " but also sets plusId - addRecipeAndPlus ignores blueprintAmount and always uses 1."
+                    );
+                }
+
+                this.addRecipeAndPlus(
+                        recipe.label(),
+                        productId,
+                        WeaponRegistrar.toDatabaseID(recipe.plusId()),
+                        recipe.blueprintId(),
+                        a.id(), a.amount(),
+                        b.id(), b.amount(),
+                        c.id(), c.amount()
+                );
+            } else {
+                this.addRecipe(
+                        recipe.label(),
+                        productId,
+                        recipe.blueprintId(), recipe.blueprintAmount(),
+                        a.id(), a.amount(),
+                        b.id(), b.amount(),
+                        c.id(), c.amount()
+                );
+            }
 
             added++;
         }
