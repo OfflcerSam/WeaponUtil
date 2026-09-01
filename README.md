@@ -337,6 +337,8 @@ Two images referencing the exact same resolved path (e.g. a weapon and its ammo 
 different mod folders using `"icon": "../SharedPack/laser.png"`) are only loaded onto the GPU once and share
 the same custom icon number.
 
+Note: If another mod uses this same method, it could cause lookup collisions until the texture loading for icons is changed.
+
 ## Known limitations
 
 - No name-based lookup for recipe ingredient/blueprint IDs.
