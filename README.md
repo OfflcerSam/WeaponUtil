@@ -18,7 +18,7 @@ Place JSON files under:
 ```
 
 Each subfolder of `weapons/` is treated as its own namespace (typically your pack's name).
-Every `.json` file directly inside it is loaded as either one weapon or one ammo item, 
+Every `.json` file directly inside it is loaded as either one weapon or one ammo item,
 depending on its top-level `"type"` field (`"weapon"` or `"ammo"`, defaults to `"weapon"` if omitted).
 
 Weapon ids and ammo ids are tracked as two separate pools, a weapon and an ammo item are allowed to share
@@ -189,14 +189,17 @@ as any other invalid field.
 
 ### `recipe` (optional)
 
-Same shape and rules as ShipFoundry's `recipe` section - see that README for the full blueprint/material ID tables. 
+Same shape and rules as ShipFoundry's `recipe` section - see that README for the full blueprint/material ID tables.
 Product ID in the crafting table is `WeaponRegistrar.toDatabaseID(id)` (`items.ItemTypeConstantsInterface.WEAPON * 10000 + id`).
+
+### `lootTable` (optional)
+[]
 
 ## Ammo
 
 ### Current Schema
 
-Ammo also needs a `"kind"`, which selects which FX class its bonuses feed into. 
+Ammo also needs a `"kind"`, which selects which FX class its bonuses feed into.
 Example rail ammo with a crafting recipe included in repo:
 
 ```json
@@ -255,7 +258,7 @@ Example rail ammo with a crafting recipe included in repo:
 
 Ammo ids are registered as consumables (`items.ItemTypeConstantsInterface.CONSUMABLE * 10000 + id` for the
 database id), **and** they're also the literal key each FX class's `configureEFXandBonus(int)` switches on
-at fire-time (see [How ammo bonuses actually work](#how-ammo-bonuses-actually-work) below). 
+at fire-time (see [How ammo bonuses actually work](#how-ammo-bonuses-actually-work) below).
 Vanilla currently occupies roughly `801-999` (missiles/rounds) and `1001-1050ish` (fighters).
 
 ### `icon` (ammo)
@@ -304,6 +307,10 @@ Unlike weapons/ships, ammo crafts in stacks (vanilla usually does 100-600 units 
 
 Product ID in the crafting table is `AmmoRegistrar.toDatabaseID(id)` (`items.ItemTypeConstantsInterface.CONSUMABLE * 10000 + id`).
 
+### `lootTable` (optional, not yet wired)
+
+[]
+
 ## How custom icons are drawn
 
 Vanilla item icons are always drawn from one shared spritesheet (`items/items.png`) at a fixed 32x32 cell size.
@@ -324,7 +331,7 @@ the same custom icon number.
 
 ## Known limitations
 
-- No name-based lookup for recipe ingredient/blueprint IDs. 
+- No name-based lookup for recipe ingredient/blueprint IDs.
   See ShipFoundry's README for the blueprint/material ID tables (they're shared across ships, weapons, and ammo recipes).
 - Weapon `effectType` values beyond the vanilla ones already in use (0 for plain hitscan, 800s for missiles, 1001 for fighters) haven't been individually verified.
 
@@ -336,11 +343,12 @@ the same custom icon number.
 - `twin_catapult_tube.json` - a `bay` weapon with a market listing, no recipe.
 - `voidburst_cannon.json` - a `turret` weapon using a **custom icon** (`voidburst_icon.png`, included in the
   same folder) instead of a vanilla spritesheet index, to exercise the string `icon` path.
+- `scrap_reclaimer.json` - a `salvager` weapon with a market listing, no recipe.
+- `aegis_pdu.json` - a `pdu` weapon with a market listing, no recipe.
+- `gravity_tether.json` - a `tether` weapon with a market listing, no recipe.
 - `rift_rounds.json` - `rail` ammo with a market listing and a stack-output crafting recipe.
 - `rift_missiles.json` - `missile` ammo with a market listing, no recipe.
 - `rift_fighters.json` - `fighter` ammo with a market listing, no recipe.
-
-(`salvager`/`pdu`/`tether` kinds aren't included as samples yet)
 
 Copy the `WeaponSample` folder to `<gameDirectory>/weapons/` to try it. If the `weapons` folder doesn't exist, create it.
 
