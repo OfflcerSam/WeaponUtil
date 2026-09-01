@@ -70,7 +70,13 @@ call actually registers it. Example turret weapon included in repo:
       { "id": 10711, "amount": 8 },
       { "id": 10702, "amount": 4 }
     ]
-  }
+  },
+
+  "lootTable": [
+    { "tier": 0, "weight": 1 },
+    { "tier": 1, "weight": 1 },
+    { "tier": 1, "weight": 1, "rare": true }
+  ]
 }
 ```
 
@@ -193,7 +199,13 @@ Same shape and rules as ShipFoundry's `recipe` section - see that README for the
 Product ID in the crafting table is `WeaponRegistrar.toDatabaseID(id)` (`items.ItemTypeConstantsInterface.WEAPON * 10000 + id`).
 
 ### `lootTable` (optional)
-[]
+
+| Field    | Type    | Notes                                                                                                |
+|----------|---------|------------------------------------------------------------------------------------------------------|
+| `tier`   | int     | Which `_database.DropTable` tier bucket (0-6) this entry targets.                                    |
+| `weight` | int     | Optional, defaults to `1`. How many times this weapon is inserted into that tier's pool - see below. |
+| `rare`   | boolean | Optional, defaults to `false`. Adds to the tier's rare pool instead of its common one.               |
+
 
 ## Ammo
 
@@ -307,10 +319,6 @@ Unlike weapons/ships, ammo crafts in stacks (vanilla usually does 100-600 units 
 
 Product ID in the crafting table is `AmmoRegistrar.toDatabaseID(id)` (`items.ItemTypeConstantsInterface.CONSUMABLE * 10000 + id`).
 
-### `lootTable` (optional, not yet wired)
-
-[]
-
 ## How custom icons are drawn
 
 Vanilla item icons are always drawn from one shared spritesheet (`items/items.png`) at a fixed 32x32 cell size.
@@ -334,6 +342,7 @@ the same custom icon number.
 - No name-based lookup for recipe ingredient/blueprint IDs.
   See ShipFoundry's README for the blueprint/material ID tables (they're shared across ships, weapons, and ammo recipes).
 - Weapon `effectType` values beyond the vanilla ones already in use (0 for plain hitscan, 800s for missiles, 1001 for fighters) haven't been individually verified.
+- `lootTable` only does anything on weapons, could not find any vanilla ammo loot tables.
 
 ## Setup
 
