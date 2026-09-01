@@ -1,7 +1,6 @@
 package offlcersam.weaponfoundry.mixin;
 
 import game.Main;
-import offlcersam.weaponfoundry.WeaponFoundryIcons;
 import offlcersam.weaponfoundry.WeaponFoundryLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +19,6 @@ public class MainSetupMixin {
             )
     )
     private void weaponfoundry$loadWeapons(CallbackInfo ci) {
-        WeaponFoundryIcons.load();
         WeaponFoundryLoader.load();
     }
 

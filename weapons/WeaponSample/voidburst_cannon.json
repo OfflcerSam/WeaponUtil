@@ -1,0 +1,25 @@
+{
+  "type": "weapon",
+  "id": 5002,
+  "kind": "turret",
+  "icon": "voidburst_icon.png",
+  "color": "VIOLET",
+  "name": "Voidburst Cannon",
+  "description": "Fires a compressed void charge. Uses a custom icon loaded from voidburst_icon.png in this same folder, instead of a vanilla spritesheet index.",
+  "tier": 1,
+  "rarity": "RARE",
+  "market": true,
+
+  "turretStats": {
+    "weaponType": 4,
+    "volume": 5.0,
+    "creditValue": 1,
+    "baseDamage": 6.0,
+    "range": 240,
+    "energyRatio": 2.6,
+    "effectType": 0,
+    "accuracy": 0.72,
+    "reloadTime": 4.2,
+    "bonusCoef": -1.0
+  }
+}

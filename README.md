@@ -17,17 +17,16 @@ Place JSON files under:
 <gameDirectory>/weapons/<yourWeaponPackName>/*.json
 ```
 
-Each subfolder of `weapons/` is treated as its own namespace (typically your mod's name).
-Every `.json` file directly inside it is loaded as either one weapon or one ammo item, depending on its
-top-level `"type"` field (`"weapon"` or `"ammo"`, defaults to `"weapon"` if omitted).
+Each subfolder of `weapons/` is treated as its own namespace (typically your pack's name).
+Every `.json` file directly inside it is loaded as either one weapon or one ammo item, 
+depending on its top-level `"type"` field (`"weapon"` or `"ammo"`, defaults to `"weapon"` if omitted).
 
-Weapon ids and ammo ids are tracked as two separate pools - a weapon and an ammo item are allowed to share
+Weapon ids and ammo ids are tracked as two separate pools, a weapon and an ammo item are allowed to share
 the same `id` number, since they end up in different database ranges either way (see [`id`](#id) below).
 Within each pool, ids must be unique across **all** `weapons/` subfolders. If two files claim the same id in
 the same pool, the second one loaded is skipped with a log message naming the folder that already claimed it.
 
-There is no equivalent to ShipFoundry's automatic sprite copying - weapons and ammo use the vanilla item icon
-spritesheet system (see [`icon`](#icon) below) instead of per-entity PNGs, so no extra texture step is needed.
+Icons can use vanilla Icon Index or sprite png.
 
 ## Weapons
 
@@ -77,18 +76,18 @@ call actually registers it. Example turret weapon included in repo:
 
 ### Base fields
 
-| Field         | Type    | Notes                                                                                   |
-|---------------|---------|-----------------------------------------------------------------------------------------|
-| `type`        | string  | `"weapon"`. Optional, this is the default if omitted.                                   |
-| `id`          | int     | Unique weapon base ID. See [`id`](#id) below.                                           |
-| `kind`        | string  | One of `turret`, `bay`, `salvager`, `pdu`, `tether` (case-insensitive). See below.      |
-| `icon`        | int     | Spritesheet icon index, same convention as ShipFoundry's `icon` field.                  |
-| `color`       | string  | Name of a `Color` constant (case-insensitive). Same list as ShipFoundry's README.       |
-| `name`        | string  | Display name.                                                                           |
-| `description` | string  | Display description. Optional, defaults to `""`.                                        |
-| `tier`        | int     | Affects usable level and stat scaling, same `tier * 10` level formula as ships.         |
-| `rarity`      | string  | Name of a `TypeTag` constant (case-insensitive).                                        |
-| `market`      | boolean | Optional, defaults to `false`. If `true`, listed for buy/sell at station index 502/512. |
+| Field         | Type          | Notes                                                                                                         |
+|---------------|---------------|---------------------------------------------------------------------------------------------------------------|
+| `type`        | string        | `"weapon"`. Optional, this is the default if omitted.                                                         |
+| `id`          | int           | Unique weapon base ID. See [`id`](#id) below.                                                                 |
+| `kind`        | string        | One of `turret`, `bay`, `salvager`, `pdu`, `tether` (case-insensitive). See below.                            |
+| `icon`        | int or string | Vanilla spritesheet index, **or** a path to a custom PNG next to this JSON. See [`icon`](#icon-weapon) below. |
+| `color`       | string        | Name of a `Color` constant (case-insensitive). Same list as ShipFoundry's README.                             |
+| `name`        | string        | Display name.                                                                                                 |
+| `description` | string        | Display description. Optional, defaults to `""`.                                                              |
+| `tier`        | int           | Affects usable level and stat scaling, same `tier * 10` level formula as ships.                               |
+| `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                              |
+| `market`      | boolean       | Optional, defaults to `false`. If `true`, listed for buy/sell at station index 502/512.                       |
 
 ### `id`
 
@@ -96,6 +95,24 @@ Weapon ids share a pool separate from ammo ids (see [Folder convention](#folder-
 still collide with vanilla's own weapon item ids if reused, since they're written to the same database range
 (`items.ItemTypeConstantsInterface.WEAPON * 10000 + id`). Stick to a clearly out-of-range block (the samples
 use `5000+`) to be safe. Do not change an id once a save has that weapon in it.
+
+### `icon` (weapon)
+
+Either:
+- **A number** - a plain vanilla spritesheet index, same convention as ShipFoundry's `icon` field
+  (`items/items.png`, a 32x32 grid, `column = iconNumber % 32`, `row = iconNumber / 32`).
+- **A string** - a path to a PNG, resolved relative to the folder this weapon's JSON file is in. A bare
+  filename (`"rift_railgun.png"`) looks for the image right next to the JSON; a relative path with
+  subfolders (`"icons/rift_railgun.png"`) also works. The image is loaded the first time this exact path
+  is referenced by any JSON in `weapons/`, and reused (not reloaded) if another weapon or ammo item in the
+  same or a different pack references that same path again.
+
+There's no fixed pixel size requirement for a custom image - unlike vanilla's spritesheet cells, which are a
+fixed 32x32, a custom icon is drawn as its own full image, scaled to fit wherever the game would normally
+draw a 32x32 icon. A non-square image will look stretched in-game, so square source art is still recommended,
+but any resolution works (see [How custom icons are drawn](#how-custom-icons-are-drawn) below for why).
+A missing or corrupt file logs an error naming the exact path it tried and skips loading that JSON, the same
+as any other invalid field.
 
 ### `kind`
 
@@ -147,14 +164,14 @@ use `5000+`) to be safe. Do not change an id once a save has that weapon in it.
 
 ### `pduStats` (required for `pdu`)
 
-| Field            | Type   | Notes               |
-|------------------|--------|---------------------|
-| `unitVolume`     | double | Cargo volume.       |
-| `creditValue`    | long   | Credit value.       |
-| `targetRange`    | float  | Intercept range.    |
-| `targetPower`    | float  | Intercept damage.   |
-| `targetAccuracy` | float  | Intercept accuracy. |
-| `energyUsage`    | float  | Energy usage.       |
+| Field            | Type   | Notes                       |
+|------------------|--------|------------------------------|
+| `unitVolume`     | double | Cargo volume.                |
+| `creditValue`    | long   | Credit value.                |
+| `targetRange`    | float  | Intercept range.             |
+| `targetPower`    | float  | Intercept damage.            |
+| `targetAccuracy` | float  | Intercept accuracy.          |
+| `energyUsage`    | float  | Energy usage.                |
 
 ### `tetherStats` (required for `tether`)
 
@@ -172,15 +189,15 @@ use `5000+`) to be safe. Do not change an id once a save has that weapon in it.
 
 ### `recipe` (optional)
 
-Same shape and rules as ShipFoundry's `recipe` section - see that README for the full blueprint/material ID
-tables. Product ID in the crafting table is `WeaponRegistrar.toDatabaseID(id)` (`items.ItemTypeConstantsInterface.WEAPON * 10000 + id`).
+Same shape and rules as ShipFoundry's `recipe` section - see that README for the full blueprint/material ID tables. 
+Product ID in the crafting table is `WeaponRegistrar.toDatabaseID(id)` (`items.ItemTypeConstantsInterface.WEAPON * 10000 + id`).
 
 ## Ammo
 
 ### Current Schema
 
-Ammo also needs a `"kind"`, which selects which FX class its bonuses feed into. Example rail ammo with a
-crafting recipe included in repo:
+Ammo also needs a `"kind"`, which selects which FX class its bonuses feed into. 
+Example rail ammo with a crafting recipe included in repo:
 
 ```json
 {
@@ -219,28 +236,32 @@ crafting recipe included in repo:
 
 ### Base fields
 
-| Field         | Type    | Notes                                                                                   |
-|---------------|---------|-----------------------------------------------------------------------------------------|
-| `type`        | string  | `"ammo"`, required (otherwise it's loaded as a weapon).                                 |
-| `id`          | int     | Unique ammo base ID. See [Ammo `id` ranges](#ammo-id-ranges) below.                     |
-| `kind`        | string  | One of `missile`, `rail`, `fighter` (case-insensitive). Selects the FX class it feeds.  |
-| `icon`        | int     | Spritesheet icon index.                                                                 |
-| `color`       | string  | Name of a `Color` constant (case-insensitive).                                          |
-| `name`        | string  | Display name.                                                                           |
-| `description` | string  | Display description. A stat-summary line is appended to this automatically (see `fx`).  |
-| `tier`        | int     | Affects usable level.                                                                   |
-| `rarity`      | string  | Name of a `TypeTag` constant (case-insensitive).                                        |
-| `market`      | boolean | Optional, defaults to `false`. If `true`, listed for buy/sell at station index 502/512. |
-| `volume`      | double  | Cargo volume per unit.                                                                  |
-| `creditValue` | long    | Credit value per unit.                                                                  |
+| Field         | Type          | Notes                                                                                                       |
+|---------------|---------------|-------------------------------------------------------------------------------------------------------------|
+| `type`        | string        | `"ammo"`, required (otherwise it's loaded as a weapon).                                                     |
+| `id`          | int           | Unique ammo base ID. See [Ammo `id` ranges](#ammo-id-ranges) below.                                         |
+| `kind`        | string        | One of `missile`, `rail`, `fighter` (case-insensitive). Selects the FX class it feeds.                      |
+| `icon`        | int or string | Vanilla spritesheet index, **or** a path to a custom PNG next to this JSON. See [`icon`](#icon-ammo) below. |
+| `color`       | string        | Name of a `Color` constant (case-insensitive).                                                              |
+| `name`        | string        | Display name.                                                                                               |
+| `description` | string        | Display description. A stat-summary line is appended to this automatically (see `fx`).                      |
+| `tier`        | int           | Affects usable level.                                                                                       |
+| `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                            |
+| `market`      | boolean       | Optional, defaults to `false`. If `true`, listed for buy/sell at station index 502/512.                     |
+| `volume`      | double        | Cargo volume per unit.                                                                                      |
+| `creditValue` | long          | Credit value per unit.                                                                                      |
 
 ### Ammo `id` ranges
 
 Ammo ids are registered as consumables (`items.ItemTypeConstantsInterface.CONSUMABLE * 10000 + id` for the
 database id), **and** they're also the literal key each FX class's `configureEFXandBonus(int)` switches on
-at fire-time (see [How ammo bonuses actually work](#how-ammo-bonuses-actually-work) below). Vanilla currently
-occupies roughly `801-999` (missiles/rounds) and `1001-1050ish` (fighters) - stay well clear of that (the
-samples use `5100+`/`5200+`/`5300+`) to avoid colliding with a real vanilla case in that switch.
+at fire-time (see [How ammo bonuses actually work](#how-ammo-bonuses-actually-work) below). 
+Vanilla currently occupies roughly `801-999` (missiles/rounds) and `1001-1050ish` (fighters).
+
+### `icon` (ammo)
+
+Same rules as [weapon `icon`](#icon-weapon) - a number for a vanilla spritesheet index, or a string path to a
+PNG resolved relative to this ammo item's own JSON file.
 
 ### `fx`
 
@@ -283,31 +304,43 @@ Unlike weapons/ships, ammo crafts in stacks (vanilla usually does 100-600 units 
 
 Product ID in the crafting table is `AmmoRegistrar.toDatabaseID(id)` (`items.ItemTypeConstantsInterface.CONSUMABLE * 10000 + id`).
 
+## How custom icons are drawn
+
+Vanilla item icons are always drawn from one shared spritesheet (`items/items.png`) at a fixed 32x32 cell size.
+Referenced purely by numeric index, there's no file-path lookup route for items in vanilla the way
+`DeferedTextureLoader` resolves ship sprites by filename convention.
+
+So a string `icon` doesn't plug into that spritesheet at all. Instead, `WeaponFoundryIcons` loads the given
+PNG as its own standalone `Texture` the first time it's referenced, and hands back a made-up integer (starting
+at `WeaponFoundryIcons.CUSTOM_ICON_BASE`, currently `1024`, comfortably past vanilla's real range) purely to
+act as a lookup key - it is never an index into any spritesheet. `ItemIconMixin` `@Redirect`s every place
+`Item` draws its icon (`drawIcon`, `drawIconAsMount`, `drawQuickMenuIcon`) so that when an item's icon number
+resolves to one of these custom textures, it draws that whole image (scaled into whatever destination size
+the game intended for a normal icon) instead of sampling a spritesheet cell.
+
+Two images referencing the exact same resolved path (e.g. a weapon and its ammo sharing an icon, or two
+different mod folders using `"icon": "../SharedPack/laser.png"`) are only loaded onto the GPU once and share
+the same custom icon number.
+
 ## Known limitations
 
-- No name-based lookup for recipe ingredient/blueprint IDs yet, same limitation as ShipFoundry - use raw
-  database item ids. See ShipFoundry's README for the blueprint/material ID tables (they're shared across
-  ships, weapons, and ammo recipes).
-- No custom PNG icon sheet is wired up yet - `WeaponFoundryIcons`/`ItemIconMixin` (ported from WeaponTest)
-  support one, but `src/main/resources/items/custom_item_icons.png` needs to actually be supplied; without
-  it, `icon` values below `WeaponFoundryIcons.CUSTOM_ICON_BASE` (1024) just use vanilla's existing spritesheet
-  icons, which is what every sample JSON in this repo does.
-- Weapon `effectType` values beyond the vanilla ones already in use (0 for plain hitscan, 800s for missiles,
-  1001 for fighters) haven't been individually verified - cross-check against `WeaponFX`/`ChainGun` in a
-  decompile if a custom `effectType` doesn't render the way you expect.
+- No name-based lookup for recipe ingredient/blueprint IDs. 
+  See ShipFoundry's README for the blueprint/material ID tables (they're shared across ships, weapons, and ammo recipes).
+- Weapon `effectType` values beyond the vanilla ones already in use (0 for plain hitscan, 800s for missiles, 1001 for fighters) haven't been individually verified.
 
 ## Setup
 
-`weapons/WeaponSample/` recreates 2 weapons and 2 ammo items as JSON, exercising every `kind`:
+`weapons/WeaponSample/` recreates weapons and ammo items as JSON, exercising every `kind`:
 
 - `rift_railgun.json` - a `turret` weapon with a market listing and a crafting recipe.
 - `twin_catapult_tube.json` - a `bay` weapon with a market listing, no recipe.
+- `voidburst_cannon.json` - a `turret` weapon using a **custom icon** (`voidburst_icon.png`, included in the
+  same folder) instead of a vanilla spritesheet index, to exercise the string `icon` path.
 - `rift_rounds.json` - `rail` ammo with a market listing and a stack-output crafting recipe.
 - `rift_missiles.json` - `missile` ammo with a market listing, no recipe.
 - `rift_fighters.json` - `fighter` ammo with a market listing, no recipe.
 
-(`salvager`/`pdu`/`tether` kinds aren't included as samples yet - their stats sections above are complete
-and taken directly from `WeaponList`'s decompiled signatures, but untested in-game.)
+(`salvager`/`pdu`/`tether` kinds aren't included as samples yet)
 
 Copy the `WeaponSample` folder to `<gameDirectory>/weapons/` to try it. If the `weapons` folder doesn't exist, create it.
 

@@ -100,7 +100,7 @@ public final class AmmoRegistrar {
         ModLogger.log("[WeaponFoundry] Registered ammo " + def.name() + " (id: " + def.id() + ")");
     }
 
-    /** Mirrors the "Missile/Projectile/Fighter modifiers: +X PH damage, +Y EM damage, +Z speed." suffix vanilla appends. */
+    /** Mirrors the "Missile/Projectile/Fighter modifiers: +X PH damage, +Y EM damage[, +Z speed]." suffix vanilla appends. */
     private static String statLine(AmmoDefinition.Kind kind, ResolvedFx fx) {
         StringBuilder line = new StringBuilder();
 

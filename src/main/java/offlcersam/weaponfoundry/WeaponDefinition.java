@@ -2,6 +2,8 @@ package offlcersam.weaponfoundry;
 
 import offlcersam.weaponfoundry.json.JsonValue;
 
+import java.nio.file.Path;
+
 /**
  * Required WeaponDefinition for a weapon.
  */
@@ -12,8 +14,8 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
 
     /**
      * Which WeaponList.write*() family this weapon uses.
-     * TURRET  -> WeaponList.write(...)
-     * BAY     -> WeaponList.writeBay(...)
+     * TURRET  -> WeaponList.write(...)     (normal weapon slot)
+     * BAY     -> WeaponList.writeBay(...)  (fighter bay, launches FighterFX)
      * SALVAGER-> WeaponList.writeSalvager(...)
      * PDU     -> WeaponList.writePDU(...)
      * TETHER  -> WeaponList.writeTether(...)
@@ -66,10 +68,10 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
      * Parses and validates one weapon JSON object.
      * Throws JsonValue.JsonException with a specific field name on any missing/malformed required field.
      */
-    public static WeaponDefinition fromJson(JsonValue root) {
+    public static WeaponDefinition fromJson(JsonValue root, Path baseDir) {
         int id = root.get("id").asInt();
         Kind kind = parseKind(root.get("kind").asString());
-        int icon = root.get("icon").asInt();
+        int icon = WeaponFoundryIcons.resolveIcon(root.get("icon"), baseDir);
         String color = root.get("color").asString();
         String name = root.get("name").asString();
         String description = root.getString("description", "");

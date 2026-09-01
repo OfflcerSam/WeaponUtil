@@ -19,7 +19,7 @@ public final class JsonValue {
     private final boolean boolValue;
 
     private JsonValue(Type type, Map<String, JsonValue> object, List<JsonValue> array,
-                       String stringValue, double numberValue, boolean boolValue) {
+                      String stringValue, double numberValue, boolean boolValue) {
         this.type = type;
         this.object = object;
         this.array = array;
@@ -117,8 +117,6 @@ public final class JsonValue {
         }
         return boolValue;
     }
-
-    // ---- convenience accessors with defaults, used heavily by ShipDefinition parsing ----
 
     public String getString(String key, String fallback) {
         JsonValue v = getOrNull(key);

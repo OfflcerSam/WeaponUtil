@@ -2,6 +2,8 @@ package offlcersam.weaponfoundry;
 
 import offlcersam.weaponfoundry.json.JsonValue;
 
+import java.nio.file.Path;
+
 /**
  * Required AmmoDefinition for a consumable ammo item (Missiles, Rounds, or Fighters).
  */
@@ -35,12 +37,11 @@ public record AmmoDefinition(int id, Kind kind, int icon, String color, String n
 
     /**
      * Parses and validates one ammo JSON object.
-     * Throws JsonValue.JsonException with a specific field name on any missing/malformed required field.
      */
-    public static AmmoDefinition fromJson(JsonValue root) {
+    public static AmmoDefinition fromJson(JsonValue root, Path baseDir) {
         int id = root.get("id").asInt();
         Kind kind = parseKind(root.get("kind").asString());
-        int icon = root.get("icon").asInt();
+        int icon = WeaponFoundryIcons.resolveIcon(root.get("icon"), baseDir);
         String color = root.get("color").asString();
         String name = root.get("name").asString();
         String description = root.getString("description", "");

@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
- * Scans <gameDir>/weapons/<modName>/*.json to register each one as a weapon or an ammo item,
- * depending on its top-level "type" field ("weapon" or "ammo").
+ * Scans <gameDir>/weapons/<modName>/*.json to register each one as a weapon or an ammo item, depending on its top-level "type" field ("weapon" or "ammo").
  */
 public final class WeaponFoundryLoader {
     private static final String WEAPONS_FOLDER_NAME = "weapons";
@@ -128,8 +127,9 @@ public final class WeaponFoundryLoader {
         WeaponDefinition def;
 
         try {
-            def = WeaponDefinition.fromJson(root);
-        } catch (JsonValue.JsonException e) {
+            def = WeaponDefinition.fromJson(root, file.getParent());
+        } catch (RuntimeException e) {
+
             ModLogger.log(
                     "[WeaponFoundry] Invalid weapon JSON in " + file
                             + " (mod \"" + modName + "\"): " + e.getMessage()
@@ -164,8 +164,9 @@ public final class WeaponFoundryLoader {
         AmmoDefinition def;
 
         try {
-            def = AmmoDefinition.fromJson(root);
-        } catch (JsonValue.JsonException e) {
+            def = AmmoDefinition.fromJson(root, file.getParent());
+        } catch (RuntimeException e) {
+
             ModLogger.log(
                     "[WeaponFoundry] Invalid ammo JSON in " + file
                             + " (mod \"" + modName + "\"): " + e.getMessage()
