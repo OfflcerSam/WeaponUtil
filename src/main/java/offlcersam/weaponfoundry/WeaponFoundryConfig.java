@@ -11,11 +11,15 @@ import java.util.Set;
  * WeaponFoundry's config, backed by SSFML's new SSFMLConfig API.
  * Lives at{@code <gameDir>/config/weaponfoundry/weaponfoundry.cfg} once loaded.
  * <p>
- * Two options:
+ * Options:
  * - enabledPacks: comma-separated list of weapons/ subfolder names to load.
  *   Blank (the default) means load every pack found, same as before this config existed.
  * - debugLogging: when true, logs one line per weapon/ammo/market listing registered instead of just per-pack and per-boot summaries.
  *   Off by default to keep normal logs quiet.
+ * - debugItemGrantEnabled: whether DebugItemGrant grants every registered weapon/ammo on character
+ *   load at all. Was previously a hardcoded constant in that class.
+ * - debugItemGrantCharacterName: which character save name triggers DebugItemGrant. Was previously
+ *   a hardcoded "WTEST" constant in that class.
  */
 public final class WeaponFoundryConfig {
 
@@ -23,6 +27,11 @@ public final class WeaponFoundryConfig {
 
     private static final String KEY_ENABLED_PACKS = "enabledPacks";
     private static final String KEY_DEBUG_LOGGING = "debugLogging";
+    private static final String KEY_DEBUG_ITEM_GRANT_ENABLED = "debugItemGrantEnabled";
+    private static final String KEY_DEBUG_ITEM_GRANT_CHARACTER_NAME = "debugItemGrantCharacterName";
+
+    private static final String DEFAULT_DEBUG_ITEM_GRANT_ENABLED = "true";
+    private static final String DEFAULT_DEBUG_ITEM_GRANT_CHARACTER_NAME = "WTEST";
 
     private static boolean loaded;
     private static SSFMLConfig.Config config;
@@ -45,6 +54,14 @@ public final class WeaponFoundryConfig {
                 new SSFMLConfig.ConfigEntry(
                         KEY_DEBUG_LOGGING, "false",
                         "Logs one line per weapon/ammo/market listing registered, instead of just summaries."
+                ),
+                new SSFMLConfig.ConfigEntry(
+                        KEY_DEBUG_ITEM_GRANT_ENABLED, DEFAULT_DEBUG_ITEM_GRANT_ENABLED,
+                        "Grants every registered weapon and 100x every registered ammo when a character with debugItemGrantCharacterName's name loads."
+                ),
+                new SSFMLConfig.ConfigEntry(
+                        KEY_DEBUG_ITEM_GRANT_CHARACTER_NAME, DEFAULT_DEBUG_ITEM_GRANT_CHARACTER_NAME,
+                        "Character save name that triggers debugItemGrantEnabled. Case-insensitive."
                 )
         );
 
@@ -59,6 +76,14 @@ public final class WeaponFoundryConfig {
 
     public static boolean debugLogging() {
         return config != null && config.getBoolean(KEY_DEBUG_LOGGING);
+    }
+
+    public static boolean debugItemGrantEnabled() {
+        return config == null || config.getBoolean(KEY_DEBUG_ITEM_GRANT_ENABLED);
+    }
+
+    public static String debugItemGrantCharacterName() {
+        return config != null ? config.getString(KEY_DEBUG_ITEM_GRANT_CHARACTER_NAME) : DEFAULT_DEBUG_ITEM_GRANT_CHARACTER_NAME;
     }
 
     /** Only logs when debugLogging is enabled - for per-item confirmations, not warnings/errors/summaries. */

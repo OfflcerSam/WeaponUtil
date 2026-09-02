@@ -29,6 +29,22 @@ public final class WeaponFoundryLoader {
     private WeaponFoundryLoader() {
     }
 
+    /** Returns the full database ids of every weapon claimed by the given pack folder name (case-insensitive). */
+    public static int[] getWeaponDatabaseIDsForPack(String packName) {
+        return CLAIMED_WEAPON_IDS.entrySet().stream()
+                .filter(entry -> entry.getValue().equalsIgnoreCase(packName))
+                .mapToInt(entry -> WeaponRegistrar.toDatabaseID(entry.getKey()))
+                .toArray();
+    }
+
+    /** Returns the full database ids of every ammo item claimed by the given pack folder name (case-insensitive). */
+    public static int[] getAmmoDatabaseIDsForPack(String packName) {
+        return CLAIMED_AMMO_IDS.entrySet().stream()
+                .filter(entry -> entry.getValue().equalsIgnoreCase(packName))
+                .mapToInt(entry -> AmmoRegistrar.toDatabaseID(entry.getKey()))
+                .toArray();
+    }
+
     public static void load() {
         if (loaded) {
             return;
