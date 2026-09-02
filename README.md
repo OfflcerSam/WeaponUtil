@@ -7,7 +7,7 @@ Requires my fork of [SSFML](https://github.com/OfflcerSam/SectorSpaceFabricModLo
 
 Be careful editing certain stats mid-playthrough, it could cause it to be technically a separate item and make the original null.
 
-Latest game version support: <!-- TODO: fill in the new build/version number -->
+Latest game version support: 0.6.0.0
 
 ### Changelog Notes (Unreleased currently, will add changelog file later)
 
@@ -19,6 +19,10 @@ Latest game version support: <!-- TODO: fill in the new build/version number -->
   version) - previously it only did anything for weapons.
 - `lootTable` no longer works for **PDU** weapons - there's no gear pool for them in this game version
   (previously PDUs were just as supported as any other weapon `kind`).
+- Added a config file (`<gameDirectory>/config/weaponfoundry/weaponfoundry.cfg`), backed by SSFML's new config
+  API - see [Config](#config). The debug-item-grant toggle and debug character name are no longer hardcoded
+  constants in `DebugItemGrant`; they're config options now (`debugItemGrantEnabled` /
+  `debugItemGrantCharacterName`), same defaults as before so existing behavior doesn't change unless you edit the file.
 
 ## Folder convention
 
@@ -94,17 +98,17 @@ call actually registers it. Example turret weapon included in repo:
 
 ### Base fields
 
-| Field         | Type          | Notes                                                                                                         |
-|---------------|---------------|---------------------------------------------------------------------------------------------------------------|
-| `type`        | string        | `"weapon"`. Optional, this is the default if omitted.                                                         |
-| `id`          | int           | Unique weapon base ID. See [`id`](#id) below.                                                                 |
-| `kind`        | string        | One of `turret`, `bay`, `salvager`, `pdu`, `tether` (case-insensitive). See below.                            |
-| `icon`        | int or string | Vanilla spritesheet index, **or** a path to a custom PNG next to this JSON. See [`icon`](#icon-weapon) below. |
-| `color`       | string        | Name of a `Color` constant (case-insensitive). Same list as ShipFoundry's README.                             |
-| `name`        | string        | Display name.                                                                                                 |
-| `description` | string        | Display description. Optional, defaults to `""`.                                                              |
-| `tier`        | int           | Affects usable level and stat scaling, same `tier * 10` level formula as ships.                               |
-| `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                              |
+| Field         | Type          | Notes                                                                                                                     |
+|---------------|---------------|---------------------------------------------------------------------------------------------------------------------------|
+| `type`        | string        | `"weapon"`. Optional, this is the default if omitted.                                                                     |
+| `id`          | int           | Unique weapon base ID. See [`id`](#id) below.                                                                             |
+| `kind`        | string        | One of `turret`, `bay`, `salvager`, `pdu`, `tether` (case-insensitive). See below.                                        |
+| `icon`        | int or string | Vanilla spritesheet index, **or** a path to a custom PNG next to this JSON. See [`icon`](#icon-weapon) below.             |
+| `color`       | string        | Name of a `Color` constant (case-insensitive). Same list as ShipFoundry's README.                                         |
+| `name`        | string        | Display name.                                                                                                             |
+| `description` | string        | Display description. Optional, defaults to `""`.                                                                          |
+| `tier`        | int           | Affects usable level and stat scaling, same `tier * 10` level formula as ships.                                           |
+| `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                                          |
 | `market`      | object        | Optional. If present, listed at station index 502/512 (Military Station markets). See [`market`](#market-optional) below. |
 
 ### `id`
@@ -211,14 +215,14 @@ JSON controls directly.
 
 ### `pduStats` (required for `pdu`)
 
-| Field            | Type   | Notes                       |
-|------------------|--------|------------------------------|
-| `unitVolume`     | double | Cargo volume.                |
-| `creditValue`    | long   | Credit value.                |
-| `targetRange`    | float  | Intercept range.             |
-| `targetPower`    | float  | Intercept damage.            |
-| `targetAccuracy` | float  | Intercept accuracy.          |
-| `energyUsage`    | float  | Energy usage.                |
+| Field            | Type   | Notes               |
+|------------------|--------|---------------------|
+| `unitVolume`     | double | Cargo volume.       |
+| `creditValue`    | long   | Credit value.       |
+| `targetRange`    | float  | Intercept range.    |
+| `targetPower`    | float  | Intercept damage.   |
+| `targetAccuracy` | float  | Intercept accuracy. |
+| `energyUsage`    | float  | Energy usage.       |
 
 ### `tetherStats` (required for `tether`)
 
@@ -255,10 +259,10 @@ is safe to leave as a persistent hand-edited file (see the note in `Setup` about
 ]
 ```
 
-| Field    | Type | Notes                                                                                                |
-|----------|------|--------------------------------------------------------------------------------------------------------|
+| Field    | Type | Notes                                                                                                      |
+|----------|------|------------------------------------------------------------------------------------------------------------|
 | `tier`   | int  | Which tier bucket (0-6) this entry targets. Which pool that tier belongs to depends on `kind` - see below. |
-| `weight` | int  | Optional, defaults to `1`. Currently treated as a percent chance (1-100) - see below.                  |
+| `weight` | int  | Optional, defaults to `1`. Currently treated as a percent chance (1-100) - see below.                      |
 
 **`rare` has been removed** - there's no separate rare pool to add to anymore, just one pool per tier
 with a probability per row. To get a "shows up, but not often" entry the way `rare: true` used to, add a
@@ -273,11 +277,11 @@ migration of old drop rates - what "feels right" will likely need retuning by pl
 
 **Which pool a `lootTable` entry lands in**, by `kind`:
 
-| Weapon `kind`    | Pool                       |
-|------------------|----------------------------|
-| `turret` / `bay` | Weapon gear pool           |
-| `salvager`       | Salvager gear pool         |
-| `tether`         | Tether gear pool           |
+| Weapon `kind`    | Pool                                                                                                                           |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `turret` / `bay` | Weapon gear pool                                                                                                               |
+| `salvager`       | Salvager gear pool                                                                                                             |
+| `tether`         | Tether gear pool                                                                                                               |
 | `pdu`            | **Not supported** - there's no gear pool for PDUs in this game version. A `lootTable` on a `pdu` weapon is logged and ignored. |
 
 
@@ -330,21 +334,21 @@ Example rail ammo with a crafting recipe included in repo:
 
 ### Base fields
 
-| Field         | Type          | Notes                                                                                                       |
-|---------------|---------------|-------------------------------------------------------------------------------------------------------------|
-| `type`        | string        | `"ammo"`, required (otherwise it's loaded as a weapon).                                                     |
-| `id`          | int           | Unique ammo base ID. See [Ammo `id` ranges](#ammo-id-ranges) below.                                         |
-| `kind`        | string        | One of `missile`, `rail`, `fighter` (case-insensitive). Selects the FX class it feeds.                      |
-| `icon`        | int or string | Vanilla spritesheet index, **or** a path to a custom PNG next to this JSON. See [`icon`](#icon-ammo) below. |
-| `color`       | string        | Name of a `Color` constant (case-insensitive).                                                              |
-| `name`        | string        | Display name.                                                                                               |
-| `description` | string        | Display description. A stat-summary line is appended to this automatically (see `fx`).                      |
-| `tier`        | int           | Affects usable level.                                                                                       |
-| `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                            |
+| Field         | Type          | Notes                                                                                                               |
+|---------------|---------------|---------------------------------------------------------------------------------------------------------------------|
+| `type`        | string        | `"ammo"`, required (otherwise it's loaded as a weapon).                                                             |
+| `id`          | int           | Unique ammo base ID. See [Ammo `id` ranges](#ammo-id-ranges) below.                                                 |
+| `kind`        | string        | One of `missile`, `rail`, `fighter` (case-insensitive). Selects the FX class it feeds.                              |
+| `icon`        | int or string | Vanilla spritesheet index, **or** a path to a custom PNG next to this JSON. See [`icon`](#icon-ammo) below.         |
+| `color`       | string        | Name of a `Color` constant (case-insensitive).                                                                      |
+| `name`        | string        | Display name.                                                                                                       |
+| `description` | string        | Display description. A stat-summary line is appended to this automatically (see `fx`).                              |
+| `tier`        | int           | Affects usable level.                                                                                               |
+| `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                                    |
 | `market`      | object        | Optional. If present, listed at station index 502/512 (Military Station markets). See [`market`](#market-optional). |
-| `volume`      | double        | Cargo volume per unit.                                                                                      |
-| `creditValue` | long          | Credit value per unit.                                                                                      |
-| `lootTable`   | array         | Optional. Same shape as [weapons' `lootTable`](#loottable-optional) - see that section for the pool table.  |
+| `volume`      | double        | Cargo volume per unit.                                                                                              |
+| `creditValue` | long          | Credit value per unit.                                                                                              |
+| `lootTable`   | array         | Optional. Same shape as [weapons' `lootTable`](#loottable-optional) - see that section for the pool table.          |
 
 ### Ammo `id` ranges
 
@@ -444,6 +448,18 @@ Note: If another mod uses this same method, it could cause lookup collisions unt
 - The `weight` -> probability mapping on `lootTable` entries (see that section) is a placeholder
   interpretation, not a verified match to any particular in-game drop rate feel.
 
+## Config
+
+WeaponFoundry's settings live at `<gameDirectory>/config/weaponfoundry/weaponfoundry.cfg`, generated on first load via SSFML's config API.
+Comment lines starting with `#` are safe to read but not meant to be edited.
+
+| Key                           | Default | Notes                                                                                                                                                                                |
+|-------------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `enabledPacks`                | (blank) | Comma-separated `weapons/` subfolder names to load. Blank means load every pack found, same as before this option existed.                                                           |
+| `debugLogging`                | `false` | When `true`, logs one line per weapon/ammo/market listing registered, instead of just per-pack and per-boot summaries.                                                               |
+| `debugItemGrantEnabled`       | `true`  | Whether loading a character whose name matches `debugItemGrantCharacterName` or a pack folder name grants weapons/ammo to their cargo hold at all. See [Setup](#setup) below.        |
+| `debugItemGrantCharacterName` | `WTEST` | Character save name that grants every registered weapon and 100x every registered ammo (case-insensitive). Named `weapons/<name>/` folders keep working independently of this value. |
+
 ## Setup
 
 `weapons/WeaponSample/` recreates weapons and ammo items as JSON, exercising every `kind`, and now also
@@ -474,5 +490,5 @@ Note on `lootTable`: entries get patched into `<gameDirectory>/resources/data/ge
 Those files are meant to be  hand-editable and persist across launches, so it's safe to tweak drop rates there directly too.
 Just be  aware a fresh `lootTable` in JSON will still patch its own rows back in on the next boot regardless.
 
-Use `WTEST` on character save name to get all weapons and 100x of all ammo on load. Otherwise, use the folder
-name for that folder's items on load.
+Use `WTEST` on character save name to get all weapons and 100x of all ammo on load (configurable via
+`debugItemGrantCharacterName`). Otherwise, use the folder name for that folder's items on load.

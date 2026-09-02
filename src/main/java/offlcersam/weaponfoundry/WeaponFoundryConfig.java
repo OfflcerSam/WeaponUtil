@@ -57,7 +57,7 @@ public final class WeaponFoundryConfig {
                 ),
                 new SSFMLConfig.ConfigEntry(
                         KEY_DEBUG_ITEM_GRANT_ENABLED, DEFAULT_DEBUG_ITEM_GRANT_ENABLED,
-                        "Grants every registered weapon and 100x every registered ammo when a character with debugItemGrantCharacterName's name loads."
+                        "Grants all JSON registered weapons and x100 ammo to a character with debugItemGrantCharacterName's name loads."
                 ),
                 new SSFMLConfig.ConfigEntry(
                         KEY_DEBUG_ITEM_GRANT_CHARACTER_NAME, DEFAULT_DEBUG_ITEM_GRANT_CHARACTER_NAME,
