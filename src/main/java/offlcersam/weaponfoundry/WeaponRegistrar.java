@@ -1,6 +1,5 @@
 package offlcersam.weaponfoundry;
 
-import com.sector.bridge.SSFMLLogger;
 import illuminatus.core.graphics.Color;
 import items.ItemTypeConstantsInterface;
 import items.TypeTag;
@@ -32,7 +31,7 @@ public final class WeaponRegistrar {
     /** Registers a weapon ID and remembers it for later use. */
     private static int registerWeaponID(int id) {
         REGISTERED_WEAPON_IDS.add(id);
-        SSFMLLogger.log("[WeaponFoundry] Added weapon ID to registry: " + id);
+        WeaponFoundryConfig.debug("[WeaponFoundry] Added weapon ID to registry: " + id);
         return id;
     }
 
@@ -75,7 +74,7 @@ public final class WeaponRegistrar {
             MARKET_WEAPON_LISTINGS.add(
                     new MarketListing(toDatabaseID(def.id()), def.market().produce(), def.market().consume())
             );
-            SSFMLLogger.log(
+            WeaponFoundryConfig.debug(
                     "[WeaponFoundry] Registered weapon " + def.name()
                             + " for market listings (produce=" + def.market().produce()
                             + ", consume=" + def.market().consume() + ")"
@@ -84,7 +83,7 @@ public final class WeaponRegistrar {
 
         LOADED_WEAPONS.put(def.id(), def);
 
-        SSFMLLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " (id: " + def.id() + ")");
+        WeaponFoundryConfig.debug("[WeaponFoundry] Registered weapon " + def.name() + " (id: " + def.id() + ")");
     }
 
     /** TURRET and BAY both need setBaseAttributes() called first - see WeaponList.write/writeBay. */

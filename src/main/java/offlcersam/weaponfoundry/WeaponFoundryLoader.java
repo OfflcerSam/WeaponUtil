@@ -35,6 +35,8 @@ public final class WeaponFoundryLoader {
         }
         loaded = true;
 
+        WeaponFoundryConfig.load();
+
         Path gameDir = FabricLoader.getInstance().getGameDir();
         Path weaponsRoot = gameDir.resolve(WEAPONS_FOLDER_NAME);
 
@@ -51,6 +53,16 @@ public final class WeaponFoundryLoader {
 
         try (Stream<Path> modFolders = Files.list(weaponsRoot)) {
             for (Path modFolder : modFolders.filter(Files::isDirectory).toList()) {
+                String modName = modFolder.getFileName().toString();
+
+                if (!WeaponFoundryConfig.isPackEnabled(modName)) {
+                    SSFMLLogger.log(
+                            "[WeaponFoundry] Skipping pack \"" + modName
+                                    + "\" - not in this mod's enabledPacks config."
+                    );
+                    continue;
+                }
+
                 totalLoaded += loadModFolder(modFolder);
             }
         } catch (IOException e) {
@@ -62,7 +74,7 @@ public final class WeaponFoundryLoader {
                 "[WeaponFoundry] Loaded " + totalLoaded
                         + " item(s) total from " + weaponsRoot
         );
-        
+
         LootTablePatcher.patch();
     }
 

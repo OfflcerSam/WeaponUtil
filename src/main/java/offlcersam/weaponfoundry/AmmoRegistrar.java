@@ -34,7 +34,7 @@ public final class AmmoRegistrar {
 
     private static int registerAmmoID(int id) {
         REGISTERED_AMMO_IDS.add(id);
-        SSFMLLogger.log("[WeaponFoundry] Added ammo ID to registry: " + id);
+        WeaponFoundryConfig.debug("[WeaponFoundry] Added ammo ID to registry: " + id);
         return id;
     }
 
@@ -69,7 +69,6 @@ public final class AmmoRegistrar {
             case RAIL -> RAIL_FX.put(def.id(), resolvedFx);
             case FIGHTER -> FIGHTER_FX.put(def.id(), resolvedFx);
         }
-
         ConsumableList.write(
                 registerAmmoID(def.id()),
                 def.icon(),
@@ -90,7 +89,7 @@ public final class AmmoRegistrar {
             MARKET_AMMO_LISTINGS.add(
                     new MarketListing(toDatabaseID(def.id()), def.market().produce(), def.market().consume())
             );
-            SSFMLLogger.log(
+            WeaponFoundryConfig.debug(
                     "[WeaponFoundry] Registered ammo " + def.name()
                             + " for market listings (produce=" + def.market().produce()
                             + ", consume=" + def.market().consume() + ")"
@@ -99,7 +98,7 @@ public final class AmmoRegistrar {
 
         LOADED_AMMO.put(def.id(), def);
 
-        SSFMLLogger.log("[WeaponFoundry] Registered ammo " + def.name() + " (id: " + def.id() + ")");
+        WeaponFoundryConfig.debug("[WeaponFoundry] Registered ammo " + def.name() + " (id: " + def.id() + ")");
     }
 
     /** Mirrors the "Missile/Projectile/Fighter modifiers: +X PH damage, +Y EM damage[, +Z speed]." suffix vanilla appends. */
