@@ -7,7 +7,18 @@ Requires my fork of [SSFML](https://github.com/OfflcerSam/SectorSpaceFabricModLo
 
 Be careful editing certain stats mid-playthrough, it could cause it to be technically a separate item and make the original null.
 
-Latest game version support: 0.6.0.0
+Latest game version support: <!-- TODO: fill in the new build/version number -->
+
+### Changelog Notes (Unreleased currently, will add changelog file later)
+
+- `market` changed from a plain boolean to an object, so buy/sell can be controlled independently -
+  see [`market`](#market-optional).
+- `lootTable` entries no longer support `rare` - there's no separate rare pool anymore. See
+  [`lootTable`](#loottable-optional).
+- `lootTable` now works for **ammo** too (missile/rail/fighter all have real drop pools in this game
+  version) - previously it only did anything for weapons.
+- `lootTable` no longer works for **PDU** weapons - there's no gear pool for them in this game version
+  (previously PDUs were just as supported as any other weapon `kind`).
 
 ## Folder convention
 
@@ -46,7 +57,7 @@ call actually registers it. Example turret weapon included in repo:
   "description": "A modified railgun firing compressed rail slugs.",
   "tier": 0,
   "rarity": "UNCOMMON",
-  "market": true,
+  "market": {},
 
   "turretStats": {
     "weaponType": 5,
@@ -65,6 +76,7 @@ call actually registers it. Example turret weapon included in repo:
     "label": "T1:Rift Railgun",
     "blueprintId": 20107,
     "blueprintAmount": 1,
+    "plusId": 5006,
     "ingredients": [
       { "id": 10701, "amount": 6 },
       { "id": 10711, "amount": 8 },
@@ -73,9 +85,9 @@ call actually registers it. Example turret weapon included in repo:
   },
 
   "lootTable": [
-    { "tier": 0, "weight": 1 },
-    { "tier": 1, "weight": 1 },
-    { "tier": 1, "weight": 1, "rare": true }
+    { "tier": 0, "weight": 15 },
+    { "tier": 1, "weight": 12 },
+    { "tier": 1, "weight": 4 }
   ]
 }
 ```
@@ -93,7 +105,7 @@ call actually registers it. Example turret weapon included in repo:
 | `description` | string        | Display description. Optional, defaults to `""`.                                                              |
 | `tier`        | int           | Affects usable level and stat scaling, same `tier * 10` level formula as ships.                               |
 | `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                              |
-| `market`      | boolean       | Optional, defaults to `false`. If `true`, listed for buy/sell at station index 502/512.                       |
+| `market`      | object        | Optional. If present, listed at station index 502/512 (Military Station markets). See [`market`](#market-optional) below. |
 
 ### `id`
 
@@ -119,6 +131,35 @@ draw a 32x32 icon. A non-square image will look stretched in-game, so square sou
 but any resolution works (see [How custom icons are drawn](#how-custom-icons-are-drawn) below for why).
 A missing or corrupt file logs an error naming the exact path it tried and skips loading that JSON, the same
 as any other invalid field.
+
+### `market` (optional)
+
+Shared by both weapons and ammo. Omitting this field entirely means the item isn't listed in any market at
+all - the same as the old `"market": false`.
+
+```json
+"market": {
+  "produce": true,
+  "consume": true
+}
+```
+
+| Field     | Type    | Notes                                                                                      |
+|-----------|---------|--------------------------------------------------------------------------------------------|
+| `produce` | boolean | Optional, defaults to `true`. Whether it's always buyable from the market (a "sell" line). |
+| `consume` | boolean | Optional, defaults to `true`. Whether the market always buys it back (a "buy" line).       |
+
+Game update: `MarketItem.BUY_AND_SELL_ALWAYS` (a single constant covering both directions on one item)
+was removed. Vanilla now achieves "buy and sell" by using two *different* item ids with two different
+constants (`PRODUCES_ALWAYS` / `CONSUMES_ALWAYS`), never the same id twice - see `MarketList.writeMilitaryStation()`.
+Since our custom weapons/ammo only have one item id apiece, `produce`/`consume` independently control
+whether `MarketRegistrar` registers a `PRODUCES_ALWAYS` entry, a `CONSUMES_ALWAYS` entry, or both for
+that id. `"market": {}` (both flags at their `true` default) reproduces the old always-both behavior.
+Setting both to `false` is the same as omitting `market` entirely since there'd be nothing left to list.
+
+The market-category tag shown on the item (Military/Industrial/etc.) is read from whichever `Market`
+object it actually lands in, the same way vanilla tags its own items - it isn't something this mod's
+JSON controls directly.
 
 ### `kind`
 
@@ -200,11 +241,44 @@ Product ID in the crafting table is `WeaponRegistrar.toDatabaseID(id)` (`items.I
 
 ### `lootTable` (optional)
 
-| Field    | Type    | Notes                                                                                                |
-|----------|---------|------------------------------------------------------------------------------------------------------|
-| `tier`   | int     | Which `_database.DropTable` tier bucket (0-6) this entry targets.                                    |
-| `weight` | int     | Optional, defaults to `1`. How many times this weapon is inserted into that tier's pool - see below. |
-| `rare`   | boolean | Optional, defaults to `false`. Adds to the tier's rare pool instead of its common one.               |
+Game update: `_database.DropTable` (and its separate common/rare pools per tier) was removed entirely.
+Weapon and ammo `lootTable` entries are now patched directly into the game's own `gear_tables.sc` /
+`loot_tables.sc` data files at boot by `LootTablePatcher`, which uses the game's current format: one
+pool per tier, with a per-row probability instead of a separate rare pool. `LootTablePatcher` marks
+every row it inserts and strips its own previous rows before re-inserting fresh ones each boot, so this
+is safe to leave as a persistent hand-edited file (see the note in `Setup` about `resources/data/`).
+
+```json
+"lootTable": [
+  { "tier": 0, "weight": 15 },
+  { "tier": 1, "weight": 12 }
+]
+```
+
+| Field    | Type | Notes                                                                                                |
+|----------|------|--------------------------------------------------------------------------------------------------------|
+| `tier`   | int  | Which tier bucket (0-6) this entry targets. Which pool that tier belongs to depends on `kind` - see below. |
+| `weight` | int  | Optional, defaults to `1`. Currently treated as a percent chance (1-100) - see below.                  |
+
+**`rare` has been removed** - there's no separate rare pool to add to anymore, just one pool per tier
+with a probability per row. To get a "shows up, but not often" entry the way `rare: true` used to, add a
+second entry at the same tier with a lower `weight` instead - see `rift_railgun.json`'s two tier-1 rows.
+
+**weight -> probability**: this is a reinterpretation, not a mechanical port of the old behavior. The old
+`weight` counted how many times a weapon was duplicated into a flat list, so a higher number *relative to
+other entries in the same pool* meant more common. The new table format wants an explicit probability per
+row instead, so `weight` is currently divided by 100 and clamped to `1.0` (`weight: 15` -> a 15% chance to
+be picked whenever that table rolls). Treat the sample weights as a starting point, not a precise
+migration of old drop rates - what "feels right" will likely need retuning by playtesting.
+
+**Which pool a `lootTable` entry lands in**, by `kind`:
+
+| Weapon `kind`    | Pool                       |
+|------------------|----------------------------|
+| `turret` / `bay` | Weapon gear pool           |
+| `salvager`       | Salvager gear pool         |
+| `tether`         | Tether gear pool           |
+| `pdu`            | **Not supported** - there's no gear pool for PDUs in this game version. A `lootTable` on a `pdu` weapon is logged and ignored. |
 
 
 ## Ammo
@@ -225,7 +299,7 @@ Example rail ammo with a crafting recipe included in repo:
   "description": "Dense slugs machined for the Rift Railgun.",
   "tier": 0,
   "rarity": "UNCOMMON",
-  "market": true,
+  "market": {},
   "volume": 0.03,
   "creditValue": 40,
 
@@ -245,7 +319,12 @@ Example rail ammo with a crafting recipe included in repo:
       { "id": 10202, "amount": 20 },
       { "id": 10058, "amount": 20 }
     ]
-  }
+  },
+
+  "lootTable": [
+    { "tier": 0, "weight": 18 },
+    { "tier": 1, "weight": 10 }
+  ]
 }
 ```
 
@@ -262,9 +341,10 @@ Example rail ammo with a crafting recipe included in repo:
 | `description` | string        | Display description. A stat-summary line is appended to this automatically (see `fx`).                      |
 | `tier`        | int           | Affects usable level.                                                                                       |
 | `rarity`      | string        | Name of a `TypeTag` constant (case-insensitive).                                                            |
-| `market`      | boolean       | Optional, defaults to `false`. If `true`, listed for buy/sell at station index 502/512.                     |
+| `market`      | object        | Optional. If present, listed at station index 502/512 (Military Station markets). See [`market`](#market-optional). |
 | `volume`      | double        | Cargo volume per unit.                                                                                      |
 | `creditValue` | long          | Credit value per unit.                                                                                      |
+| `lootTable`   | array         | Optional. Same shape as [weapons' `lootTable`](#loottable-optional) - see that section for the pool table.  |
 
 ### Ammo `id` ranges
 
@@ -295,14 +375,30 @@ Not every field applies to every `kind` - unused fields for a given kind are sim
 
 ### How ammo bonuses actually work
 
-Ammo items don't store their own damage/speed bonuses. At fire-time, `MissileFX`/`RailGunFX`/`FighterFX` each
-call an instance method `configureEFXandBonus(int itemBaseId)` that's a plain `switch` on literal vanilla item
-ids - the same pattern as `Unique_NPC_Drops` being keyed on literal vanilla ship ids. A custom ammo id isn't
-one of those cases, so without intervention it would silently fall through with stale/zero bonuses.
+Ammo items don't store their own damage/speed bonuses. At fire-time, `MissileFX` and `FighterFX` each call
+an instance method (`configureEFXandBonus(int)` on `MissileFX`, `configureFighter(int)` on `FighterFX` as of
+this game update) that's a plain `switch` on literal vanilla item ids - the same pattern as
+`Unique_NPC_Drops` being keyed on literal vanilla ship ids. `RailGunFX` does the same thing but as a
+`static` method (`configureEFXandBonus(int, SpaceShip)`) writing `static` fields, also as of this game
+update. A custom ammo id isn't one of those cases, so without intervention it would silently fall through
+with stale/zero bonuses.
 
 `MissileFXMixin`, `RailGunFXMixin`, and `FighterFXMixin` each `@Inject` at the `HEAD` of that method and
 `cancel()` it, substituting the resolved `fx` values from this mod's `AmmoRegistrar` whenever the id matches
 one this mod registered. Vanilla ammo ids fall through untouched.
+
+### `lootTable` pools (ammo)
+
+Which pool an ammo `lootTable` entry lands in, by `kind`:
+
+| Ammo `kind` | Pool                   |
+|-------------|------------------------|
+| `missile`   | Missile ammo drop pool |
+| `rail`      | Rifle round drop pool  |
+| `fighter`   | Fighter ammo drop pool |
+
+See [weapons' `lootTable`](#loottable-optional) for the `tier`/`weight` fields themselves - the shape is
+identical, only which pool it lands in differs.
 
 ### `recipe` (optional)
 
@@ -344,24 +440,39 @@ Note: If another mod uses this same method, it could cause lookup collisions unt
 - No name-based lookup for recipe ingredient/blueprint IDs.
   See ShipFoundry's README for the blueprint/material ID tables (they're shared across ships, weapons, and ammo recipes).
 - Weapon `effectType` values beyond the vanilla ones already in use (0 for plain hitscan, 800s for missiles, 1001 for fighters) haven't been individually verified.
-- `lootTable` only does anything on weapons, could not find any vanilla ammo loot tables.
+- `lootTable` doesn't do anything for `pdu` weapons - there's no gear pool for them in this game version. (PDUs still might be unfinished technically)
+- The `weight` -> probability mapping on `lootTable` entries (see that section) is a placeholder
+  interpretation, not a verified match to any particular in-game drop rate feel.
 
 ## Setup
 
-`weapons/WeaponSample/` recreates weapons and ammo items as JSON, exercising every `kind`:
+`weapons/WeaponSample/` recreates weapons and ammo items as JSON, exercising every `kind`, and now also
+every `market` produce/consume combination:
 
-- `rift_railgun.json` - a `turret` weapon with a market listing and a crafting recipe.
-- `twin_catapult_tube.json` - a `bay` weapon with a market listing, no recipe.
-- `voidburst_cannon.json` - a `turret` weapon using a **custom icon** (`voidburst_icon.png`, included in the
-  same folder) instead of a vanilla spritesheet index, to exercise the string `icon` path.
-- `scrap_reclaimer.json` - a `salvager` weapon with a market listing, no recipe.
-- `aegis_pdu.json` - a `pdu` weapon with a market listing, no recipe.
-- `gravity_tether.json` - a `tether` weapon with a market listing, no recipe.
-- `rift_rounds.json` - `rail` ammo with a market listing and a stack-output crafting recipe.
-- `rift_missiles.json` - `missile` ammo with a market listing, no recipe.
-- `rift_fighters.json` - `fighter` ammo with a market listing, no recipe.
+- `rift_railgun.json` - a `turret` weapon with a default (`{}`, both directions) market listing, a
+  crafting recipe with a `plusId` upgrade product, and a `lootTable` showing the old-`rare`-replacement
+  pattern (two entries at the same tier, the second at a lower `weight`).
+- `rift_railgun_plus.json` - the `+` product of `rift_railgun.json`'s recipe. Omits `market` entirely
+  (not listed anywhere - a craft-only upgrade), and uses a single low-`weight` `lootTable` entry.
+- `twin_catapult_tube.json` - a `bay` weapon with `"market": { "produce": true, "consume": false }` -
+  always buyable, but the market won't buy it back.
+- `voidburst_cannon.json` - a `turret` weapon using a **custom icon** (`voidburst_icon.png`, included in
+  the same folder) instead of a vanilla spritesheet index, and `"market": { "produce": false, "consume": true }` -
+  a loot-only rare weapon you can sell but never buy.
+- `scrap_reclaimer.json` - a `salvager` weapon with a default market listing, no recipe.
+- `aegis_pdu.json` - a `pdu` weapon with a default market listing, no recipe, and **no `lootTable`** -
+  PDUs don't have a gear pool in this game version, see [`lootTable`](#loottable-optional).
+- `gravity_tether.json` - a `tether` weapon with a default market listing, no recipe.
+- `rift_rounds.json` - `rail` ammo with a default market listing and a stack-output crafting recipe.
+- `rift_missiles.json` - `missile` ammo with a default market listing, no recipe, and a `lootTable`
+  entry (ammo drop pools are new in this game version - previously ammo couldn't use `lootTable` at all).
+- `rift_fighters.json` - `fighter` ammo with a default market listing, no recipe, and a `lootTable` entry.
 
 Copy the `WeaponSample` folder to `<gameDirectory>/weapons/` to try it. If the `weapons` folder doesn't exist, create it.
+
+Note on `lootTable`: entries get patched into `<gameDirectory>/resources/data/gear_tables.sc` and `loot_tables.sc` on boot (marked and kept idempotent - see `LootTablePatcher`).
+Those files are meant to be  hand-editable and persist across launches, so it's safe to tweak drop rates there directly too.
+Just be  aware a fresh `lootTable` in JSON will still patch its own rows back in on the next boot regardless.
 
 Use `WTEST` on character save name to get all weapons and 100x of all ammo on load. Otherwise, use the folder
 name for that folder's items on load.

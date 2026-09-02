@@ -8,7 +8,7 @@
   "description": "Locks onto a target and drags on its systems.",
   "tier": 1,
   "rarity": "UNCOMMON",
-  "market": true,
+  "market": {},
 
   "tetherStats": {
     "unitVolume": 10.0,
@@ -23,7 +23,7 @@
   },
 
   "lootTable": [
-    { "tier": 1, "weight": 1 },
-    { "tier": 2, "weight": 1 }
+    { "tier": 1, "weight": 12 },
+    { "tier": 2, "weight": 10 }
   ]
 }

@@ -8,7 +8,7 @@
   "description": "Dense slugs machined for the Rift Railgun.",
   "tier": 0,
   "rarity": "UNCOMMON",
-  "market": true,
+  "market": {},
   "volume": 0.03,
   "creditValue": 40,
 
@@ -31,7 +31,7 @@
   },
 
   "lootTable": [
-    { "tier": 0, "weight": 2 },
-    { "tier": 1, "weight": 1 }
+    { "tier": 0, "weight": 18 },
+    { "tier": 1, "weight": 10 }
   ]
 }

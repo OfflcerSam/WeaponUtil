@@ -1,31 +1,30 @@
 {
   "type": "weapon",
-  "id": 5001,
-  "kind": "bay",
-  "icon": 275,
-  "color": "WHITE",
-  "name": "Twin Catapult Tube",
-  "description": "Launches a pair of fighters instead of one.",
+  "id": 5002,
+  "kind": "turret",
+  "icon": "voidburst_icon.png",
+  "color": "VIOLET",
+  "name": "Voidburst Cannon",
+  "description": "Fires a compressed void charge. Uses a custom icon loaded from voidburst_icon.png in this same folder, instead of a vanilla spritesheet index.",
   "tier": 1,
-  "rarity": "UNCOMMON",
-  "market": true,
+  "rarity": "RARE",
+  "market": { "produce": false, "consume": true },
 
   "turretStats": {
-    "weaponType": 6,
-    "volume": 13.0,
-    "creditValue": 18250,
-    "baseDamage": 1.7,
-    "range": 379,
-    "energyRatio": 1.5,
-    "effectType": 1001,
-    "accuracy": 0.64,
-    "reloadTime": 5.2,
+    "weaponType": 4,
+    "volume": 5.0,
+    "creditValue": 1,
+    "baseDamage": 6.0,
+    "range": 240,
+    "energyRatio": 2.6,
+    "effectType": 0,
+    "accuracy": 0.72,
+    "reloadTime": 4.2,
     "bonusCoef": -1.0
   },
 
   "lootTable": [
-    { "tier": 1, "weight": 1 },
-    { "tier": 2, "weight": 1 },
-    { "tier": 2, "weight": 1, "rare": true }
+    { "tier": 1, "weight": 4 },
+    { "tier": 2, "weight": 6 }
   ]
 }

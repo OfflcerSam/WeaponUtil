@@ -8,7 +8,7 @@
   "description": "Fires a compressed void charge. Uses a custom icon loaded from voidburst_icon.png in this same folder, instead of a vanilla spritesheet index.",
   "tier": 1,
   "rarity": "RARE",
-  "market": true,
+  "market": { "produce": false, "consume": true },
 
   "turretStats": {
     "weaponType": 4,
@@ -24,7 +24,7 @@
   },
 
   "lootTable": [
-    { "tier": 1, "weight": 1, "rare": true },
-    { "tier": 2, "weight": 2, "rare": true }
+    { "tier": 1, "weight": 4 },
+    { "tier": 2, "weight": 6 }
   ]
 }
