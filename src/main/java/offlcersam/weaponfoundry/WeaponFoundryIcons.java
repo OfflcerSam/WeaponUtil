@@ -1,8 +1,8 @@
 package offlcersam.weaponfoundry;
 
+import com.sector.bridge.SSFMLLogger;
 import illuminatus.core.graphics.Texture;
 import items.Item;
-import mods.ModLogger;
 import offlcersam.weaponfoundry.json.JsonValue;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -92,7 +92,7 @@ public final class WeaponFoundryIcons {
         ICON_TEXTURES.put(iconIndex, texture);
         PATH_TO_ICON_INDEX.put(key, iconIndex);
 
-        ModLogger.log("[WeaponFoundry] Loaded custom icon \"" + imageFile.getFileName() + "\" as icon index " + iconIndex);
+        SSFMLLogger.log("[WeaponFoundry] Loaded custom icon \"" + imageFile.getFileName() + "\" as icon index " + iconIndex);
 
         return iconIndex;
     }

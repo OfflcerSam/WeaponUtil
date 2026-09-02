@@ -1,12 +1,11 @@
 package offlcersam.weaponfoundry;
 
+import com.sector.bridge.SSFMLLogger;
 import game.markets.Market;
 import game.markets.MarketDatabase;
 import game.markets.MarketItem;
 import illuminatus.core.datastructures.List;
 import items.Item;
-import mods.ModLogger;
-
 import java.lang.reflect.Field;
 
 /*
@@ -29,7 +28,7 @@ public final class MarketRegistrar {
         int[] ammo = AmmoRegistrar.getMarketAmmoDatabaseIDs();
 
         if (weapons.length == 0 && ammo.length == 0) {
-            ModLogger.log("[WeaponFoundry] No custom weapons or ammo opted into market registration");
+            SSFMLLogger.log("[WeaponFoundry] No custom weapons or ammo opted into market registration");
             return;
         }
 
@@ -57,7 +56,7 @@ public final class MarketRegistrar {
             }
         }
 
-        ModLogger.log(
+        SSFMLLogger.log(
                 "[WeaponFoundry] Added "
                         + addedItems
                         + " custom weapon/ammo listings to "
@@ -90,7 +89,7 @@ public final class MarketRegistrar {
             field.setAccessible(true);
             return (List<Market>) field.get(null);
         } catch (ReflectiveOperationException exception) {
-            ModLogger.log("[WeaponFoundry] Could not access MarketDatabase markets: " + exception);
+            SSFMLLogger.log("[WeaponFoundry] Could not access MarketDatabase markets: " + exception);
             return null;
         }
     }

@@ -1,6 +1,6 @@
 package offlcersam.weaponfoundry;
 
-import mods.ModLogger;
+import com.sector.bridge.SSFMLLogger;
 import net.fabricmc.loader.api.FabricLoader;
 import offlcersam.weaponfoundry.json.JsonParser;
 import offlcersam.weaponfoundry.json.JsonValue;
@@ -39,7 +39,7 @@ public final class WeaponFoundryLoader {
         Path weaponsRoot = gameDir.resolve(WEAPONS_FOLDER_NAME);
 
         if (!Files.isDirectory(weaponsRoot)) {
-            ModLogger.log(
+            SSFMLLogger.log(
                     "[WeaponFoundry] No \"" + WEAPONS_FOLDER_NAME
                             + "\" folder found at " + weaponsRoot
                             + " - nothing to load."
@@ -54,11 +54,11 @@ public final class WeaponFoundryLoader {
                 totalLoaded += loadModFolder(modFolder);
             }
         } catch (IOException e) {
-            ModLogger.log("[WeaponFoundry] Failed to list " + weaponsRoot + ": " + e);
+            SSFMLLogger.log("[WeaponFoundry] Failed to list " + weaponsRoot + ": " + e);
             return;
         }
 
-        ModLogger.log(
+        SSFMLLogger.log(
                 "[WeaponFoundry] Loaded " + totalLoaded
                         + " item(s) total from " + weaponsRoot
         );
@@ -78,10 +78,10 @@ public final class WeaponFoundryLoader {
                 }
             }
         } catch (IOException e) {
-            ModLogger.log("[WeaponFoundry] Failed to list " + modFolder + ": " + e);
+            SSFMLLogger.log("[WeaponFoundry] Failed to list " + modFolder + ": " + e);
         }
 
-        ModLogger.log(
+        SSFMLLogger.log(
                 "[WeaponFoundry] Loaded " + loaded
                         + " item(s) from weapon pack folder \"" + modName + "\""
         );
@@ -95,7 +95,7 @@ public final class WeaponFoundryLoader {
         try {
             text = Files.readString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            ModLogger.log("[WeaponFoundry] Could not read " + file + ": " + e);
+            SSFMLLogger.log("[WeaponFoundry] Could not read " + file + ": " + e);
             return false;
         }
 
@@ -104,7 +104,7 @@ public final class WeaponFoundryLoader {
         try {
             root = JsonParser.parse(text);
         } catch (JsonValue.JsonException e) {
-            ModLogger.log("[WeaponFoundry] Invalid JSON in " + file + " (mod \"" + modName + "\"): " + e.getMessage());
+            SSFMLLogger.log("[WeaponFoundry] Invalid JSON in " + file + " (mod \"" + modName + "\"): " + e.getMessage());
             return false;
         }
 
@@ -114,7 +114,7 @@ public final class WeaponFoundryLoader {
             case "weapon" -> loadWeaponFile(modName, file, root);
             case "ammo" -> loadAmmoFile(modName, file, root);
             default -> {
-                ModLogger.log(
+                SSFMLLogger.log(
                         "[WeaponFoundry] Unknown \"type\" \"" + type + "\" in " + file
                                 + " - expected \"weapon\" or \"ammo\"."
                 );
@@ -130,7 +130,7 @@ public final class WeaponFoundryLoader {
             def = WeaponDefinition.fromJson(root, file.getParent());
         } catch (RuntimeException e) {
 
-            ModLogger.log(
+            SSFMLLogger.log(
                     "[WeaponFoundry] Invalid weapon JSON in " + file
                             + " (mod \"" + modName + "\"): " + e.getMessage()
             );
@@ -140,7 +140,7 @@ public final class WeaponFoundryLoader {
         String owner = CLAIMED_WEAPON_IDS.get(def.id());
 
         if (owner != null) {
-            ModLogger.log(
+            SSFMLLogger.log(
                     "[WeaponFoundry] Skipping " + file
                             + ": weapon id " + def.id()
                             + " is already claimed by mod \"" + owner
@@ -152,7 +152,7 @@ public final class WeaponFoundryLoader {
         try {
             WeaponRegistrar.registerWeapon(def);
         } catch (Exception e) {
-            ModLogger.log("[WeaponFoundry] Failed to register weapon id " + def.id() + " from " + file + ": " + e);
+            SSFMLLogger.log("[WeaponFoundry] Failed to register weapon id " + def.id() + " from " + file + ": " + e);
             return false;
         }
 
@@ -167,7 +167,7 @@ public final class WeaponFoundryLoader {
             def = AmmoDefinition.fromJson(root, file.getParent());
         } catch (RuntimeException e) {
 
-            ModLogger.log(
+            SSFMLLogger.log(
                     "[WeaponFoundry] Invalid ammo JSON in " + file
                             + " (mod \"" + modName + "\"): " + e.getMessage()
             );
@@ -177,7 +177,7 @@ public final class WeaponFoundryLoader {
         String owner = CLAIMED_AMMO_IDS.get(def.id());
 
         if (owner != null) {
-            ModLogger.log(
+            SSFMLLogger.log(
                     "[WeaponFoundry] Skipping " + file
                             + ": ammo id " + def.id()
                             + " is already claimed by mod \"" + owner
@@ -189,7 +189,7 @@ public final class WeaponFoundryLoader {
         try {
             AmmoRegistrar.registerAmmo(def);
         } catch (Exception e) {
-            ModLogger.log("[WeaponFoundry] Failed to register ammo id " + def.id() + " from " + file + ": " + e);
+            SSFMLLogger.log("[WeaponFoundry] Failed to register ammo id " + def.id() + " from " + file + ": " + e);
             return false;
         }
 

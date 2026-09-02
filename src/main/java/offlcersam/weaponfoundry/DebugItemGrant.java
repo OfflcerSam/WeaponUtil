@@ -1,7 +1,7 @@
 package offlcersam.weaponfoundry;
 
+import com.sector.bridge.SSFMLLogger;
 import game.Player;
-import mods.ModLogger;
 
 public final class DebugItemGrant {
     // Set to true to automatically deposit weapons/ammo when loading your character
@@ -19,7 +19,7 @@ public final class DebugItemGrant {
             return;
         }
         if (Player.ship == null || Player.ship.cargo == null) {
-            ModLogger.log("[WeaponFoundry] Could not grant items: player cargo is not loaded.");
+            SSFMLLogger.log("[WeaponFoundry] Could not grant items: player cargo is not loaded.");
             return;
         }
 
@@ -29,7 +29,7 @@ public final class DebugItemGrant {
         int[] ammo = AmmoRegistrar.getAmmoDatabaseIDs();
         for (int ammoID : ammo) {Player.ship.cargo.add(ammoID, 100);}
 
-        ModLogger.log(
+        SSFMLLogger.log(
                 "[WeaponFoundry] Granted "
                         + weapons.length
                         + " weapon(s) and "

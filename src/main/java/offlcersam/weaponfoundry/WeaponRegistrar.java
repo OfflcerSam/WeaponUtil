@@ -2,11 +2,11 @@ package offlcersam.weaponfoundry;
 
 import _database.DropTable;
 import _database.DropWrapperList;
+import com.sector.bridge.SSFMLLogger;
 import illuminatus.core.graphics.Color;
 import items.ItemTypeConstantsInterface;
 import items.TypeTag;
 import items.lists.WeaponList;
-import mods.ModLogger;
 import offlcersam.weaponfoundry.mixin.WeaponListAccessorMixin;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public final class WeaponRegistrar {
     /** Registers a weapon ID and remembers it for later use. */
     private static int registerWeaponID(int id) {
         REGISTERED_WEAPON_IDS.add(id);
-        ModLogger.log("[WeaponFoundry] Added weapon ID to registry: " + id);
+        SSFMLLogger.log("[WeaponFoundry] Added weapon ID to registry: " + id);
         return id;
     }
 
@@ -80,14 +80,14 @@ public final class WeaponRegistrar {
 
         if (def.market()) {
             MARKET_WEAPON_IDS.add(def.id());
-            ModLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " for market listings");
+            SSFMLLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " for market listings");
         }
 
         registerLootTable(def.id(), def.lootTable());
 
         LOADED_WEAPONS.put(def.id(), def);
 
-        ModLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " (id: " + def.id() + ")");
+        SSFMLLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " (id: " + def.id() + ")");
     }
 
     /**

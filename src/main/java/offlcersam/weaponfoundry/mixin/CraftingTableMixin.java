@@ -1,8 +1,8 @@
 package offlcersam.weaponfoundry.mixin;
 
+import com.sector.bridge.SSFMLLogger;
 import crafting.CraftingTable;
 import crafting.CraftingTableNormal;
-import mods.ModLogger;
 import offlcersam.weaponfoundry.AmmoDefinition;
 import offlcersam.weaponfoundry.AmmoRegistrar;
 import offlcersam.weaponfoundry.WeaponDefinition;
@@ -37,7 +37,7 @@ public abstract class CraftingTableMixin extends CraftingTable {
 
             if (recipe.plusId() != null) {
                 if (recipe.blueprintAmount() != 1) {
-                    ModLogger.log(
+                    SSFMLLogger.log(
                             "[WeaponFoundry] Weapon " + def.name() + " (id: " + def.id()
                                     + ") sets recipe.blueprintAmount to " + recipe.blueprintAmount()
                                     + " but also sets plusId - addRecipeAndPlus ignores blueprintAmount and always uses 1."
@@ -92,6 +92,6 @@ public abstract class CraftingTableMixin extends CraftingTable {
             added++;
         }
 
-        ModLogger.log("[WeaponFoundry] Added " + added + " weapon/ammo recipe(s) from JSON.");
+        SSFMLLogger.log("[WeaponFoundry] Added " + added + " weapon/ammo recipe(s) from JSON.");
     }
 }

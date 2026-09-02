@@ -1,10 +1,10 @@
 package offlcersam.weaponfoundry;
 
+import com.sector.bridge.SSFMLLogger;
 import illuminatus.core.graphics.Color;
 import items.ItemTypeConstantsInterface;
 import items.TypeTag;
 import items.lists.ConsumableList;
-import mods.ModLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,12 +92,12 @@ public final class AmmoRegistrar {
 
         if (def.market()) {
             MARKET_AMMO_IDS.add(def.id());
-            ModLogger.log("[WeaponFoundry] Registered ammo " + def.name() + " for market listings");
+            SSFMLLogger.log("[WeaponFoundry] Registered ammo " + def.name() + " for market listings");
         }
 
         LOADED_AMMO.put(def.id(), def);
 
-        ModLogger.log("[WeaponFoundry] Registered ammo " + def.name() + " (id: " + def.id() + ")");
+        SSFMLLogger.log("[WeaponFoundry] Registered ammo " + def.name() + " (id: " + def.id() + ")");
     }
 
     /** Mirrors the "Missile/Projectile/Fighter modifiers: +X PH damage, +Y EM damage[, +Z speed]." suffix vanilla appends. */
