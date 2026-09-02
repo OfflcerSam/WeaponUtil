@@ -34,7 +34,7 @@ public final class AmmoRegistrar {
 
     private static int registerAmmoID(int id) {
         REGISTERED_AMMO_IDS.add(id);
-        ModLogger.log("[WeaponFoundry] Added ammo ID to registry: " + id);
+        SSFMLLogger.log("[WeaponFoundry] Added ammo ID to registry: " + id);
         return id;
     }
 
