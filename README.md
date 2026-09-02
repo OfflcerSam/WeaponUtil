@@ -9,7 +9,7 @@ Be careful editing certain stats mid-playthrough, it could cause it to be techni
 
 Latest game version support: 0.6.0.0
 
-### Changelog Notes (Unreleased currently, will add changelog file later)
+### Changelog Notes (Released currently, will add changelog file later)
 
 - `market` changed from a plain boolean to an object, so buy/sell can be controlled independently -
   see [`market`](#market-optional).
