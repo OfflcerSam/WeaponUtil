@@ -19,10 +19,10 @@ public abstract class MissileFXMixin {
         }
 
         MissileFX self = (MissileFX) (Object) this;
-        self.SPEED = fx.speed();
+        self.SPEED = (float) fx.speed();
         self.scale = fx.scale();
-        self.bonusEMDamage = fx.bonusEMDamage();
-        self.bonusPHDamage = fx.bonusPHDamage();
+        self.bonusEMDamage = (float) fx.bonusEMDamage();
+        self.bonusPHDamage = (float) fx.bonusPHDamage();
         self.glowColor = fx.glowColor();
         self.baseColor = fx.baseColor();
 

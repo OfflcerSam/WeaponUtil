@@ -34,7 +34,7 @@ public final class AmmoRegistrar {
 
     private static int registerAmmoID(int id) {
         REGISTERED_AMMO_IDS.add(id);
-        ModLogger.log("[WeaponFoundry] Added ammo ID to registry: " + id);
+        SSFMLLogger.log("[WeaponFoundry] Added ammo ID to registry: " + id);
         return id;
     }
 
@@ -75,7 +75,6 @@ public final class AmmoRegistrar {
             case FIGHTER -> FIGHTER_FX.put(def.id(), resolvedFx);
         }
 
-        // energyUse and deployableItemID are always 0/-1 for ammo, matching every vanilla ammo write call.
         ConsumableList.write(
                 registerAmmoID(def.id()),
                 def.icon(),
@@ -87,7 +86,9 @@ public final class AmmoRegistrar {
                 def.creditValue(),
                 0.0F,
                 -1,
-                rarity
+                rarity,
+                false,
+                false
         );
 
         if (def.market()) {

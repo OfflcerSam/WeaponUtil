@@ -1,6 +1,7 @@
 package offlcersam.weaponfoundry;
 
 import com.sector.bridge.SSFMLLogger;
+import _settings.Localization;
 import game.markets.Market;
 import game.markets.MarketDatabase;
 import game.markets.MarketItem;
@@ -69,10 +70,10 @@ public final class MarketRegistrar {
         int added = 0;
 
         for (int itemID : itemDatabaseIds) {
-            MarketItem listing = new MarketItem(itemID, MarketItem.BUY_AND_SELL_ALWAYS);
+            MarketItem listing = new MarketItem(itemID, MarketItem.PRODUCES_SOMETIMES);
 
             if (listing.item != null) {
-                Item.markAsMarketItem(listing.item);
+                Item.markAsMarketItem(listing.item, Localization.MARKET_SUPPLY_ITEM_TAG.string);
             }
 
             market.addChecked(listing);
