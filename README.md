@@ -7,7 +7,7 @@ Requires my fork of [SSFML](https://github.com/OfflcerSam/SectorSpaceFabricModLo
 
 Be careful editing certain stats mid-playthrough, it could cause it to be technically a separate item and make the original null.
 
-Latest game version support: 0.5.9.6
+Latest game version support: 0.6.0.0
 
 ## Folder convention
 
