@@ -1,7 +1,5 @@
 package offlcersam.weaponfoundry;
 
-import _database.DropTable;
-import _database.DropWrapperList;
 import com.sector.bridge.SSFMLLogger;
 import illuminatus.core.graphics.Color;
 import items.ItemTypeConstantsInterface;
@@ -83,26 +81,9 @@ public final class WeaponRegistrar {
             SSFMLLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " for market listings");
         }
 
-        registerLootTable(def.id(), def.lootTable());
-
         LOADED_WEAPONS.put(def.id(), def);
 
         SSFMLLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " (id: " + def.id() + ")");
-    }
-
-    /**
-     * Adds this weapon to DropTable.tierGearWeapon / tierRareGearWeapon for each lootTable entry.
-     */
-    private static void registerLootTable(int weaponId, List<LootEntry> lootTable) {
-        int databaseId = toDatabaseID(weaponId);
-
-        for (LootEntry entry : lootTable) {
-            DropWrapperList pool = entry.rare() ? DropTable.tierRareGearWeapon : DropTable.tierGearWeapon;
-
-            for (int i = 0; i < entry.weight(); i++) {
-                pool.add(entry.tier(), databaseId);
-            }
-        }
     }
 
     /** TURRET and BAY both need setBaseAttributes() called first - see WeaponList.write/writeBay. */

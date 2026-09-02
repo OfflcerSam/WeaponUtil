@@ -73,7 +73,7 @@ public final class MarketRegistrar {
             MarketItem listing = new MarketItem(itemID, MarketItem.PRODUCES_SOMETIMES);
 
             if (listing.item != null) {
-                Item.markAsMarketItem(listing.item, Localization.MARKET_SUPPLY_ITEM_TAG.string);
+                Item.markAsMarketItem(listing.item, Localization.MARKET_MILITARY_ITEM_TAG.string);
             }
 
             market.addChecked(listing);

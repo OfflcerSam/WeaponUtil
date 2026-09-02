@@ -62,6 +62,8 @@ public final class WeaponFoundryLoader {
                 "[WeaponFoundry] Loaded " + totalLoaded
                         + " item(s) total from " + weaponsRoot
         );
+        
+        LootTablePatcher.patch();
     }
 
     private static int loadModFolder(Path modFolder) {
