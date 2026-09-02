@@ -20,8 +20,8 @@ public final class WeaponRegistrar {
     /** Stores the base IDs of every weapon we add. */
     private static final List<Integer> REGISTERED_WEAPON_IDS = new ArrayList<>();
 
-    /** Stores the base IDs of weapons that should be added to markets. */
-    private static final List<Integer> MARKET_WEAPON_IDS = new ArrayList<>();
+    /** Stores weapons that opted into market listings, with their resolved produce/consume flags. */
+    private static final List<MarketListing> MARKET_WEAPON_LISTINGS = new ArrayList<>();
 
     /** Stores every successfully registered weapon's full definition, for anything that needs more than just an id (e.g. recipes). */
     private static final Map<Integer, WeaponDefinition> LOADED_WEAPONS = new HashMap<>();
@@ -46,14 +46,9 @@ public final class WeaponRegistrar {
         return ids;
     }
 
-    /** Returns database IDs for weapons that opted into market registration. */
-    public static int[] getMarketWeaponDatabaseIDs() {
-        int[] ids = new int[MARKET_WEAPON_IDS.size()];
-
-        for (int i = 0; i < MARKET_WEAPON_IDS.size(); i++) {
-            ids[i] = toDatabaseID(MARKET_WEAPON_IDS.get(i));
-        }
-        return ids;
+    /** Returns every weapon that opted into market registration, with its resolved produce/consume flags. */
+    public static List<MarketListing> getMarketWeaponListings() {
+        return List.copyOf(MARKET_WEAPON_LISTINGS);
     }
 
     /** Converts a weapon base ID into the game's weapon database/item ID. */
@@ -76,9 +71,15 @@ public final class WeaponRegistrar {
             case TETHER -> writeTether(def, color, rarity);
         }
 
-        if (def.market()) {
-            MARKET_WEAPON_IDS.add(def.id());
-            SSFMLLogger.log("[WeaponFoundry] Registered weapon " + def.name() + " for market listings");
+        if (def.market() != null) {
+            MARKET_WEAPON_LISTINGS.add(
+                    new MarketListing(toDatabaseID(def.id()), def.market().produce(), def.market().consume())
+            );
+            SSFMLLogger.log(
+                    "[WeaponFoundry] Registered weapon " + def.name()
+                            + " for market listings (produce=" + def.market().produce()
+                            + ", consume=" + def.market().consume() + ")"
+            );
         }
 
         LOADED_WEAPONS.put(def.id(), def);

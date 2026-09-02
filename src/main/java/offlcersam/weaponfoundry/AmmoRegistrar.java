@@ -22,7 +22,7 @@ public final class AmmoRegistrar {
     }
 
     private static final List<Integer> REGISTERED_AMMO_IDS = new ArrayList<>();
-    private static final List<Integer> MARKET_AMMO_IDS = new ArrayList<>();
+    private static final List<MarketListing> MARKET_AMMO_LISTINGS = new ArrayList<>();
     private static final Map<Integer, AmmoDefinition> LOADED_AMMO = new HashMap<>();
 
     private static final Map<Integer, ResolvedFx> MISSILE_FX = new HashMap<>();
@@ -34,7 +34,7 @@ public final class AmmoRegistrar {
 
     private static int registerAmmoID(int id) {
         REGISTERED_AMMO_IDS.add(id);
-        SSFMLLogger.log("[WeaponFoundry] Added ammo ID to registry: " + id);
+        ModLogger.log("[WeaponFoundry] Added ammo ID to registry: " + id);
         return id;
     }
 
@@ -53,14 +53,9 @@ public final class AmmoRegistrar {
         return ItemTypeConstantsInterface.CONSUMABLE * 10000 + ammoBaseId;
     }
 
-    /** Returns database IDs for ammo that opted into market registration. */
-    public static int[] getMarketAmmoDatabaseIDs() {
-        int[] ids = new int[MARKET_AMMO_IDS.size()];
-
-        for (int i = 0; i < MARKET_AMMO_IDS.size(); i++) {
-            ids[i] = toDatabaseID(MARKET_AMMO_IDS.get(i));
-        }
-        return ids;
+    /** Returns every ammo item that opted into market registration, with its resolved produce/consume flags. */
+    public static List<MarketListing> getMarketAmmoListings() {
+        return List.copyOf(MARKET_AMMO_LISTINGS);
     }
 
     public static void registerAmmo(AmmoDefinition def) {
@@ -91,9 +86,15 @@ public final class AmmoRegistrar {
                 false
         );
 
-        if (def.market()) {
-            MARKET_AMMO_IDS.add(def.id());
-            SSFMLLogger.log("[WeaponFoundry] Registered ammo " + def.name() + " for market listings");
+        if (def.market() != null) {
+            MARKET_AMMO_LISTINGS.add(
+                    new MarketListing(toDatabaseID(def.id()), def.market().produce(), def.market().consume())
+            );
+            SSFMLLogger.log(
+                    "[WeaponFoundry] Registered ammo " + def.name()
+                            + " for market listings (produce=" + def.market().produce()
+                            + ", consume=" + def.market().consume() + ")"
+            );
         }
 
         LOADED_AMMO.put(def.id(), def);

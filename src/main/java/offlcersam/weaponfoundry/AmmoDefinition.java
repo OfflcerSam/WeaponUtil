@@ -9,7 +9,7 @@ import java.util.List;
  * Required AmmoDefinition for a consumable ammo item (Missiles, Rounds, or Fighters).
  */
 public record AmmoDefinition(int id, Kind kind, int icon, String color, String name, String description, int tier,
-                             String rarity, boolean market, double volume, long creditValue, Fx fx, Recipe recipe,
+                             String rarity, MarketOptions market, double volume, long creditValue, Fx fx, Recipe recipe,
                              List<LootEntry> lootTable) {
 
     /** Which FX class's configureEFXandBonus(int) this ammo's bonuses are read by. */
@@ -49,7 +49,7 @@ public record AmmoDefinition(int id, Kind kind, int icon, String color, String n
         String description = root.getString("description", "");
         int tier = root.get("tier").asInt();
         String rarity = root.get("rarity").asString();
-        boolean market = root.getBoolean("market", false);
+        MarketOptions market = MarketOptions.parse(root);
         double volume = root.get("volume").asDouble();
         long creditValue = (long) root.get("creditValue").asDouble();
 

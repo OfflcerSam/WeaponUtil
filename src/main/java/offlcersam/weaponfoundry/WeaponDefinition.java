@@ -9,7 +9,7 @@ import java.util.List;
  * Required WeaponDefinition for a weapon.
  */
 public record WeaponDefinition(int id, Kind kind, int icon, String color, String name, String description,
-                               int tier, String rarity, boolean market, TurretStats turretStats,
+                               int tier, String rarity, MarketOptions market, TurretStats turretStats,
                                SalvagerStats salvagerStats, PduStats pduStats, TetherStats tetherStats,
                                Recipe recipe, List<LootEntry> lootTable) {
 
@@ -77,7 +77,7 @@ public record WeaponDefinition(int id, Kind kind, int icon, String color, String
         String description = root.getString("description", "");
         int tier = root.get("tier").asInt();
         String rarity = root.get("rarity").asString();
-        boolean market = root.getBoolean("market", false);
+        MarketOptions market = MarketOptions.parse(root);
 
         TurretStats turretStats = null;
         SalvagerStats salvagerStats = null;

@@ -1,7 +1,6 @@
 package offlcersam.weaponfoundry;
 
 import com.sector.bridge.SSFMLLogger;
-import _settings.Localization;
 import game.markets.Market;
 import game.markets.MarketDatabase;
 import game.markets.MarketItem;
@@ -25,10 +24,10 @@ public final class MarketRegistrar {
         }
         registered = true;
 
-        int[] weapons = WeaponRegistrar.getMarketWeaponDatabaseIDs();
-        int[] ammo = AmmoRegistrar.getMarketAmmoDatabaseIDs();
+        java.util.List<MarketListing> weapons = WeaponRegistrar.getMarketWeaponListings();
+        java.util.List<MarketListing> ammo = AmmoRegistrar.getMarketAmmoListings();
 
-        if (weapons.length == 0 && ammo.length == 0) {
+        if (weapons.isEmpty() && ammo.isEmpty()) {
             SSFMLLogger.log("[WeaponFoundry] No custom weapons or ammo opted into market registration");
             return;
         }
@@ -66,18 +65,33 @@ public final class MarketRegistrar {
         );
     }
 
-    private static int addListings(Market market, int[] itemDatabaseIds) {
+    private static int addListings(Market market, java.util.List<MarketListing> listings) {
         int added = 0;
 
-        for (int itemID : itemDatabaseIds) {
-            MarketItem listing = new MarketItem(itemID, MarketItem.PRODUCES_SOMETIMES);
+        String marketTag = market.getMarketTypeString();
 
-            if (listing.item != null) {
-                Item.markAsMarketItem(listing.item, Localization.MARKET_MILITARY_ITEM_TAG.string);
+        for (MarketListing listing : listings) {
+            if (listing.produce()) {
+                MarketItem sellListing = new MarketItem(listing.databaseId(), MarketItem.PRODUCES_ALWAYS);
+
+                if (sellListing.item != null) {
+                    Item.markAsMarketItem(sellListing.item, marketTag);
+                }
+
+                market.addChecked(sellListing);
+                added++;
             }
 
-            market.addChecked(listing);
-            added++;
+            if (listing.consume()) {
+                MarketItem buyListing = new MarketItem(listing.databaseId(), MarketItem.CONSUMES_ALWAYS);
+
+                if (buyListing.item != null) {
+                    Item.markAsMarketItem(buyListing.item, marketTag);
+                }
+
+                market.addChecked(buyListing);
+                added++;
+            }
         }
 
         return added;
