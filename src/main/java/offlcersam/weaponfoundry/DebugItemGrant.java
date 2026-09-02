@@ -12,7 +12,7 @@ public final class DebugItemGrant {
         }
 
         String characterName = Player.currentName;
-        
+
         boolean isMasterDebugName = WeaponFoundryConfig.debugItemGrantCharacterName().equalsIgnoreCase(characterName);
 
         int[] weapons;
